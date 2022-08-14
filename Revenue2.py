@@ -54,7 +54,7 @@ with st.sidebar.form(key='my_form'):
     Initial_Number_Of_Clinics                       =     st.slider("Initial Number Of Clinics [#]",
                                                             min_value = 0,
                                                             max_value = 10,
-                                                            value = 2)
+                                                            value = 2,)
 
     Number_Of_New_Clinics_Monthly_Growth            =     st.slider("Number Of New Clinics Monthly Growth [%]",
                                                             min_value = 0,
@@ -316,6 +316,50 @@ fig = px.bar(
 
 
 st.plotly_chart(fig, use_container_width=True)
+
+fig = px.line(
+    data_frame = df,
+    x = "Month",
+    y = ["Consumables_Percentage","Device_Percentage"],
+    color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
+    orientation = "v",
+    title='Devices vs Consumables Revenue',
+    labels={'x': 'Year', 'value':'% of revenue'},
+)
+
+st.plotly_chart(fig, use_container_width=True)
+
+fig = px.bar(
+    data_frame = df,
+    x = "Month",
+    y = ["Total_prescribing_clinics","New_Clinics"],
+    opacity = 0.5,
+    color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
+    orientation = "v",
+    barmode = 'group',
+    title='Number of Clinics',
+    labels={'x': 'Year', 'value':'Number of Clinics'},
+)
+
+st.plotly_chart(fig, use_container_width=True)
+
+fig = px.bar(
+    data_frame = df,
+    x = "Month",
+    y = ['New_patients_by_month','Total_patients'],
+    opacity = 0.5,
+    color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
+    orientation = "v",
+    barmode = 'group',
+    title='Number of Patients',
+    labels={'x': 'Year', 'value':'Number of Patients'},
+)
+
+st.plotly_chart(fig, use_container_width=True)
+
+
+
+
 #%%
 
 with st.expander("Calculations"):
