@@ -274,7 +274,7 @@ fig = px.bar(
     data_frame = df,
     x = "Month",
     y = ["Monthly_Revenue"], #,"Revenue_Devices"],
-    opacity = 0.7,
+    opacity = 0.5,
     color_discrete_sequence=['deepskyblue'],  #MediumSlateBlue
     orientation = "v",
     barmode = 'group',
@@ -290,11 +290,27 @@ fig = px.bar(
     data_frame = df,
     x = "Month",
     y = ["Revenue_New_Patients","Revenue_Existing_Patients"],
-    opacity = 0.7,
+    opacity = 0.5,
     color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
     orientation = "v",
     barmode = 'group',
     title='Existing vs New Patient Revenue',
+    labels={'x': 'Year', 'value':'Dollars USD'},
+)
+
+
+st.plotly_chart(fig, use_container_width=True)
+
+
+fig = px.bar(
+    data_frame = df,
+    x = "Month",
+    y = ["Revenue_Devices","Revenue_Consumables"],
+    opacity = 0.5,
+    color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
+    orientation = "v",
+    barmode = 'group',
+    title='Devices vs Consumables Revenue',
     labels={'x': 'Year', 'value':'Dollars USD'},
 )
 
@@ -321,6 +337,11 @@ base="light"
 primaryColor="#8a76bd"
 textColor="#584784"
 
+[theme]
+base="light"
+primaryColor="#8a76bd"
+secondaryBackgroundColor="#edf6fb"
+textColor="#584784"
 
 '''
 
