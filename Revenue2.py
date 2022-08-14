@@ -324,25 +324,5 @@ with st.expander("Calculations"):
 with st.expander("Amortization Matrix"):
     One_patient_amortization
 
-#DataTable(pd.DataFrame(One_patient_amortization))
-
-
-
-#st.bar_chart(chart_data)
-
-'''
-
-[theme]
-base="light"
-primaryColor="#8a76bd"
-textColor="#584784"
-
-[theme]
-base="light"
-primaryColor="#8a76bd"
-secondaryBackgroundColor="#edf6fb"
-textColor="#584784"
-
-'''
 
 
