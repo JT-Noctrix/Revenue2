@@ -745,58 +745,64 @@ pdf.cell(40,5,"Input Parameters to Model",ln=1)
 pdf.set_font("helvetica", "", 14)
 
 pdf.ln(1)
-pdf.cell(150,5,"Initial Number Of Clinics",border=1)
-pdf.cell(40,5,str(Initial_Number_Of_Clinics),border=1)
-pdf.ln(5)
-pdf.cell(150,5,"Number Of New Clinics Monthly Growth",border=1)
-pdf.cell(40,5,str(Number_Of_New_Clinics_Monthly_Growth*100)+'%',border=1)
-pdf.ln(5)
-pdf.cell(150,5,"Patients Per Clinic Per Month",border=1)
-pdf.cell(40,5,str(Patients_Per_Clinic_Per_Month),border=1)
-pdf.ln(5)
-pdf.cell(150,5,"New Patients In Existing Clinic Annual Growth",border=1)
-pdf.cell(40,5,str(New_Patients_In_Existing_Clinic_Annual_Growth*100)+'%',border=1)
-pdf.ln(5)
-pdf.cell(150,5,"Patient Attrition Rate Per Month",border=1)
-pdf.cell(40,5,str(Patient_Attrition_Rate_Per_Month*100)+'%',border=1)
-pdf.ln(5)
-pdf.cell(150,5,"Percent Patients On Medicare",border=1)
-pdf.cell(40,5,str(Percent_Patients_On_Medicare*100)+'%',border=1)
-pdf.ln(5)
-pdf.cell(150,5,"Rental Period Refill TOMA CMS",border=1)
-pdf.cell(40,5,str(Rental_Period_Refill_TOMA_CMS),border=1)
-pdf.ln(5)
-pdf.cell(150,5,"Rental Period Refill TOMA PP",border=1)
-pdf.cell(40,5,str(Rental_Period_Refill_TOMA_PP),border=1)
-pdf.ln(5)
-pdf.cell(150,5,"Rental Period Refill CCG",border=1)
-pdf.cell(40,5,str(Rental_Period_Refill_CCG),border=1)
-pdf.ln(5)
-pdf.cell(150,5,"Rental Period Refill CDI ",border=1)
-pdf.cell(40,5,str(Rental_Period_Refill_CDI),border=1)
-pdf.ln(5)
-pdf.cell(150,5,"CMS TOMA CMS ",border=1)
-pdf.cell(40,5,str(CMS_TOMA_CMS),border=1)
-pdf.ln(5)
-pdf.cell(150,5,"CMS_CCG",border=1)
-pdf.cell(40,5,str(CMS_CCG),border=1)
-pdf.ln(5)
-pdf.cell(150,5,"CMS_CDI",border=1)
-pdf.cell(40,5,str(CMS_CDI),border=1)
-pdf.ln(5)
-pdf.cell(150,5,"Private_Payer_Premium_Over_Medicare",border=1)
-pdf.cell(40,5,str(Private_Payer_Premium_Over_Medicare*100)+'%',border=1)
-pdf.ln(5)
 
+rh = 7 # row height
+
+pdf.cell(150,rh,"Initial Number Of Clinics",border=1)
+pdf.cell(40,rh,str(Initial_Number_Of_Clinics),border=1)
+pdf.ln(rh)
+pdf.cell(150,rh,"Number Of New Clinics Monthly Growth",border=1)
+pdf.cell(40,rh,str(Number_Of_New_Clinics_Monthly_Growth*100)+'%',border=1)
+pdf.ln(rh)
+pdf.cell(150,rh,"Patients Per Clinic Per Month",border=1)
+pdf.cell(40,rh,str(Patients_Per_Clinic_Per_Month),border=1)
+pdf.ln(rh)
+pdf.cell(150,rh,"New Patients In Existing Clinic Annual Growth",border=1)
+pdf.cell(40,rh,str(New_Patients_In_Existing_Clinic_Annual_Growth*100)+'%',border=1)
+pdf.ln(rh)
+pdf.cell(150,rh,"Patient Attrition Rate Per Month",border=1)
+pdf.cell(40,rh,str(Patient_Attrition_Rate_Per_Month*100)+'%',border=1)
+pdf.ln(rh)
+pdf.cell(150,rh,"Percent Patients On Medicare",border=1)
+pdf.cell(40,rh,str(Percent_Patients_On_Medicare*100)+'%',border=1)
+pdf.ln(rh)
+pdf.cell(150,rh,"Rental Period Refill TOMA CMS",border=1)
+pdf.cell(40,rh,str(Rental_Period_Refill_TOMA_CMS)+' months',border=1)
+pdf.ln(rh)
+pdf.cell(150,rh,"Rental Period Refill TOMA PP",border=1)
+pdf.cell(40,rh,str(Rental_Period_Refill_TOMA_PP)+' months',border=1)
+pdf.ln(rh)
+pdf.cell(150,rh,"Rental Period Refill CCG",border=1)
+pdf.cell(40,rh,str(Rental_Period_Refill_CCG)+' months',border=1)
+pdf.ln(rh)
+pdf.cell(150,rh,"Rental Period Refill CDI ",border=1)
+pdf.cell(40,rh,str(Rental_Period_Refill_CDI)+' months',border=1)
+pdf.ln(rh)
+pdf.cell(150,rh,"CMS TOMA CMS ",border=1)
+pdf.cell(40,rh,'$'+str(CMS_TOMA_CMS),border=1)
+pdf.ln(rh)
+pdf.cell(150,rh,"CMS CCG",border=1)
+pdf.cell(40,rh,'$'+str(CMS_CCG),border=1)
+pdf.ln(rh)
+pdf.cell(150,rh,"CMS CDI",border=1)
+pdf.cell(40,rh,'$'+str(CMS_CDI),border=1)
+pdf.ln(rh)
+pdf.cell(150,rh,"Private Payer Premium Over Medicare",border=1)
+pdf.cell(40,rh,str(Private_Payer_Premium_Over_Medicare*100)+'%',border=1)
+pdf.ln(rh)
+
+
+#  next page begins plots
 
 pdf.add_page()
 
 
-X = qdf['Quarter']
+X = qdf['Quarter'].astype(int)
 Y = qdf['Monthly_Revenue']
 
 X_axis = np.arange(len(X))
-  
+
+plt.figure(dpi=250)  
 plt.bar(X_axis - 0.2, Y, 0.4, label = 'Revenue',color='MediumSlateBlue', alpha=0.7)
 
   
@@ -809,64 +815,67 @@ plt.savefig('plot.png')
 pdf.image("plot.png",x=10,y=10,w=190)
 plt.show()
 
-X = df['Quarter']
-Y = df['Revenue_New_Patients']
-Z = df['Revenue_Existing_Patients']
 
-X_axis = np.arange(len(X))
-  
-plt.bar(X_axis - 0.2, Y, 0.4, label = 'Revenue_New_Patients',color='deepskyblue', alpha=0.7)
-plt.bar(X_axis + 0.2, Z, 0.4, label = 'Revenue_Existing_Patients',color='MediumSlateBlue', alpha=0.7)
-  
-plt.xticks(X_axis, X)
-plt.xlabel("Month")
-plt.ylabel("Dollars USD")
-plt.title("Monthly Revenue vs Existing")
-plt.legend()
-plt.savefig('plot2.png')
-pdf.image("plot2.png",x=10,y=150,w=190)
-plt.show()
+Y = qdf['Revenue_New_Patients']
+Z = qdf['Revenue_Existing_Patients']
 
 
-# next page
 
-pdf.add_page()
-
-
-X = qdf['Quarter']
-Y = qdf['Monthly_Revenue']
-
-X_axis = np.arange(len(X))
-  
-plt.bar(X_axis - 0.2, Y, 0.4, label = 'Revenue',color='MediumSlateBlue', alpha=0.7)
-
+plt.figure(dpi=250)    
+plt.bar(X_axis - 0.2, Y, 0.4, label = 'Revenue New Patients',color='deepskyblue', alpha=0.7)
+plt.bar(X_axis + 0.2, Z, 0.4, label = 'Revenue Existing Patients',color='MediumSlateBlue', alpha=0.7)
   
 plt.xticks(X_axis, X)
 plt.xlabel("Quarter")
 plt.ylabel("Dollars USD")
-plt.title("Revenue")
-plt.legend()
-plt.savefig('plot.png')
-pdf.image("plot.png",x=10,y=10,w=190)
-plt.show()
-
-X = df['Quarter']
-Y = df['Revenue_New_Patients']
-Z = df['Revenue_Existing_Patients']
-
-X_axis = np.arange(len(X))
-  
-plt.bar(X_axis - 0.2, Y, 0.4, label = 'Revenue_New_Patients',color='deepskyblue', alpha=0.7)
-plt.bar(X_axis + 0.2, Z, 0.4, label = 'Revenue_Existing_Patients',color='MediumSlateBlue', alpha=0.7)
-  
-plt.xticks(X_axis, X)
-plt.xlabel("Month")
-plt.ylabel("Dollars USD")
-plt.title("Monthly Revenue vs Existing")
+plt.title("Revenue From New vs Existing Patients")
 plt.legend()
 plt.savefig('plot2.png')
 pdf.image("plot2.png",x=10,y=150,w=190)
+plt.show()
 
+
+# next page   =============
+
+pdf.add_page()
+
+Y = qdf['New_Clinics']
+Z = qdf['Total_prescribing_clinics']
+
+plt.figure(dpi=250)    
+plt.bar(X_axis - 0.2, Y, 0.4, label = 'New Clinics',color='deepskyblue', alpha=0.7)
+plt.bar(X_axis + 0.2, Z, 0.4, label = 'Total prescribing clinics',color='MediumSlateBlue', alpha=0.7)
+  
+plt.xticks(X_axis, X)
+plt.xlabel("Quarter")
+plt.ylabel("Clinics")
+plt.title("New vs Total Prescibing Clinics")
+plt.legend()
+plt.savefig('plot3.png')
+pdf.image("plot3.png",x=10,y=10,w=190)
+plt.show()
+
+
+Y = qdf['New_patients_by_month']
+Z = qdf['Total_patients']
+
+
+
+plt.figure(dpi=250)    
+plt.bar(X_axis - 0.2, Y, 0.4, label = 'New patients by month',color='deepskyblue', alpha=0.7)
+plt.bar(X_axis + 0.2, Z, 0.4, label = 'Total patients',color='MediumSlateBlue', alpha=0.7)
+  
+plt.xticks(X_axis, X)
+plt.xlabel("Quarter")
+plt.ylabel("Patients")
+plt.title("New Patient vs Total Patients")
+plt.legend()
+plt.savefig('plot4.png')
+pdf.image("plot4.png",x=10,y=150,w=190)
+plt.show()
+
+
+# next page   =============
 
    
 
