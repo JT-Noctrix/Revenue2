@@ -812,7 +812,7 @@ plt.ylabel("Dollars USD")
 plt.title("Revenue")
 plt.legend()
 plt.savefig('plot.png')
-pdf.image("plot.png",x=10,y=10,w=190)
+pdf.image("plot.png",x=10,y=10,w=180)
 plt.show()
 
 
@@ -831,7 +831,7 @@ plt.ylabel("Dollars USD")
 plt.title("Revenue From New vs Existing Patients")
 plt.legend()
 plt.savefig('plot2.png')
-pdf.image("plot2.png",x=10,y=150,w=190)
+pdf.image("plot2.png",x=10,y=140,w=180)
 plt.show()
 
 
@@ -852,7 +852,7 @@ plt.ylabel("Clinics")
 plt.title("New vs Total Prescibing Clinics")
 plt.legend()
 plt.savefig('plot3.png')
-pdf.image("plot3.png",x=10,y=10,w=190)
+pdf.image("plot3.png",x=10,y=10,w=180)
 plt.show()
 
 
@@ -871,7 +871,7 @@ plt.ylabel("Patients")
 plt.title("New Patient vs Total Patients")
 plt.legend()
 plt.savefig('plot4.png')
-pdf.image("plot4.png",x=10,y=150,w=190)
+pdf.image("plot4.png",x=10,y=140,w=180)
 plt.show()
 
 
