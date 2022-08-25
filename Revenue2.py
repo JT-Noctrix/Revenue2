@@ -733,10 +733,143 @@ if Quarterly:
 from fpdf import FPDF
 import matplotlib.pyplot as plt 
 
-pdf = FPDF()
+pdf = FPDF(orientation="P", unit="mm", format="Letter")
 pdf.add_page()
 pdf.set_font("helvetica", "B", 16)
-pdf.cell(40, 10, "PDF Report under construction")
+pdf.image("Logo.png",x=10,y=10,w=40)
+
+pdf.cell(190, 40, "Revenue Estimation Report", ln=1, align='C')
+
+pdf.cell(40,5,"Input Parameters to Model",ln=1)
+
+pdf.set_font("helvetica", "", 14)
+
+pdf.ln(1)
+pdf.cell(150,5,"Initial Number Of Clinics",border=1)
+pdf.cell(40,5,str(Initial_Number_Of_Clinics),border=1)
+pdf.ln(5)
+pdf.cell(150,5,"Number Of New Clinics Monthly Growth",border=1)
+pdf.cell(40,5,str(Number_Of_New_Clinics_Monthly_Growth*100)+'%',border=1)
+pdf.ln(5)
+pdf.cell(150,5,"Patients Per Clinic Per Month",border=1)
+pdf.cell(40,5,str(Patients_Per_Clinic_Per_Month),border=1)
+pdf.ln(5)
+pdf.cell(150,5,"New Patients In Existing Clinic Annual Growth",border=1)
+pdf.cell(40,5,str(New_Patients_In_Existing_Clinic_Annual_Growth*100)+'%',border=1)
+pdf.ln(5)
+pdf.cell(150,5,"Patient Attrition Rate Per Month",border=1)
+pdf.cell(40,5,str(Patient_Attrition_Rate_Per_Month*100)+'%',border=1)
+pdf.ln(5)
+pdf.cell(150,5,"Percent Patients On Medicare",border=1)
+pdf.cell(40,5,str(Percent_Patients_On_Medicare*100)+'%',border=1)
+pdf.ln(5)
+pdf.cell(150,5,"Rental Period Refill TOMA CMS",border=1)
+pdf.cell(40,5,str(Rental_Period_Refill_TOMA_CMS),border=1)
+pdf.ln(5)
+pdf.cell(150,5,"Rental Period Refill TOMA PP",border=1)
+pdf.cell(40,5,str(Rental_Period_Refill_TOMA_PP),border=1)
+pdf.ln(5)
+pdf.cell(150,5,"Rental Period Refill CCG",border=1)
+pdf.cell(40,5,str(Rental_Period_Refill_CCG),border=1)
+pdf.ln(5)
+pdf.cell(150,5,"Rental Period Refill CDI ",border=1)
+pdf.cell(40,5,str(Rental_Period_Refill_CDI),border=1)
+pdf.ln(5)
+pdf.cell(150,5,"CMS TOMA CMS ",border=1)
+pdf.cell(40,5,str(CMS_TOMA_CMS),border=1)
+pdf.ln(5)
+pdf.cell(150,5,"CMS_CCG",border=1)
+pdf.cell(40,5,str(CMS_CCG),border=1)
+pdf.ln(5)
+pdf.cell(150,5,"CMS_CDI",border=1)
+pdf.cell(40,5,str(CMS_CDI),border=1)
+pdf.ln(5)
+pdf.cell(150,5,"Private_Payer_Premium_Over_Medicare",border=1)
+pdf.cell(40,5,str(Private_Payer_Premium_Over_Medicare*100)+'%',border=1)
+pdf.ln(5)
+
+
+pdf.add_page()
+
+
+X = qdf['Quarter']
+Y = qdf['Monthly_Revenue']
+
+X_axis = np.arange(len(X))
+  
+plt.bar(X_axis - 0.2, Y, 0.4, label = 'Revenue',color='MediumSlateBlue', alpha=0.7)
+
+  
+plt.xticks(X_axis, X)
+plt.xlabel("Quarter")
+plt.ylabel("Dollars USD")
+plt.title("Revenue")
+plt.legend()
+plt.savefig('plot.png')
+pdf.image("plot.png",x=10,y=10,w=190)
+plt.show()
+
+X = df['Quarter']
+Y = df['Revenue_New_Patients']
+Z = df['Revenue_Existing_Patients']
+
+X_axis = np.arange(len(X))
+  
+plt.bar(X_axis - 0.2, Y, 0.4, label = 'Revenue_New_Patients',color='deepskyblue', alpha=0.7)
+plt.bar(X_axis + 0.2, Z, 0.4, label = 'Revenue_Existing_Patients',color='MediumSlateBlue', alpha=0.7)
+  
+plt.xticks(X_axis, X)
+plt.xlabel("Month")
+plt.ylabel("Dollars USD")
+plt.title("Monthly Revenue vs Existing")
+plt.legend()
+plt.savefig('plot2.png')
+pdf.image("plot2.png",x=10,y=150,w=190)
+plt.show()
+
+
+# next page
+
+pdf.add_page()
+
+
+X = qdf['Quarter']
+Y = qdf['Monthly_Revenue']
+
+X_axis = np.arange(len(X))
+  
+plt.bar(X_axis - 0.2, Y, 0.4, label = 'Revenue',color='MediumSlateBlue', alpha=0.7)
+
+  
+plt.xticks(X_axis, X)
+plt.xlabel("Quarter")
+plt.ylabel("Dollars USD")
+plt.title("Revenue")
+plt.legend()
+plt.savefig('plot.png')
+pdf.image("plot.png",x=10,y=10,w=190)
+plt.show()
+
+X = df['Quarter']
+Y = df['Revenue_New_Patients']
+Z = df['Revenue_Existing_Patients']
+
+X_axis = np.arange(len(X))
+  
+plt.bar(X_axis - 0.2, Y, 0.4, label = 'Revenue_New_Patients',color='deepskyblue', alpha=0.7)
+plt.bar(X_axis + 0.2, Z, 0.4, label = 'Revenue_Existing_Patients',color='MediumSlateBlue', alpha=0.7)
+  
+plt.xticks(X_axis, X)
+plt.xlabel("Month")
+plt.ylabel("Dollars USD")
+plt.title("Monthly Revenue vs Existing")
+plt.legend()
+plt.savefig('plot2.png')
+pdf.image("plot2.png",x=10,y=150,w=190)
+
+
+   
+
 pdf.output("Report1.pdf")
 
 with open("Report1.pdf", "rb") as pdf_file:
@@ -746,7 +879,7 @@ with open("Report1.pdf", "rb") as pdf_file:
 st.download_button(
     "⬇️ Download PDF",
     data=PDFbyte,
-    file_name="tuto1.pdf",
+    file_name="Revenue Estimation.pdf",
     mime="application/octet-stream",
 )
 
