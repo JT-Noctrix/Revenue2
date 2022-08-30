@@ -1,31 +1,38 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sat Aug 13 17:55:57 2022
+#%% Revenue Estimation App
 
-@author: JtekG
-"""
 
+#imports
 import streamlit as st
 import time
 import plotly.express as px
 import plotly.graph_objects as go
 import pandas as pd
 import numpy as np
+import plotly.io as pio
+from fpdf import FPDF
+import matplotlib.pyplot as plt 
 
-
+#testing
+import random
 
 
 # set the page icon and title
 # may not be useful in the iframe
 st.set_page_config(page_title='Revenue Model',  layout='wide', page_icon='https://noctrixhealth.com/wp-content/uploads/2021/05/cropped-SiteIcon-32x32.jpg')
 
-# rem,ove the orange/red line on top
+
+# remove the orange/red line on top
+# also hides the hamburger menu
 hide_decoration_bar_style = '''
     <style>
         header {visibility: hidden;}
+        footer {visibility: hidden;} 
     </style>
 '''
 st.markdown(hide_decoration_bar_style, unsafe_allow_html=True)
+
+
+
 
 ## Global variables for Model
 
@@ -47,107 +54,21 @@ Set_CMS_CDI                                         = 14
 Set_Private_Payer_Premium_Over_Medicare             = 40
 
 
-#header for main page
-#st.markdown("""
-#            
-#            |   Revenue3    |         WebApp             |
-#| :------------------------------------------------------ | -----------: |
-#|  <img src="https://noctrixhealth.com/wp-content/uploads/2021/05/cropped-SiteIcon-270x270.jpg" alt="logo" width=150/>   |  **Investor Relations**  |
-#| *For internal use only*   | *Parameters set in side bar*         |
-
-
-
-# """, unsafe_allow_html=True)
-
-st.write("")
-
-
-
-st.write("")
-
 def form_callback():
     print("==Pricing Assumptions==")
-
-    print(Total_TOMA_CMS,Private_TOMA, Blended_TOMA)
-    print(Total_TOMA_PP )
-    print(Total_CCG,Private_CCG,Blended_CCG)
-    print(Total_CDI,Private_CDI,Blended_CDI)
-
-
-    # Print to compare calculations in Excel
-    print("==Pricing Assumptions==")
-    print(Total_TOMA_CMS,Private_TOMA, Blended_TOMA)
-    print(Total_TOMA_PP )
-    print(Total_CCG,Private_CCG,Blended_CCG)
-    print(Total_CDI,Private_CDI,Blended_CDI)
-    set_by_preset(choice)
-
-def set_by_preset(choice):
-    global Set_Initial_Number_Of_Clinics                       
-    global Set_Number_Of_New_Clinics_Monthly_Growth            
-    global Set_Patients_Per_Clinic_Per_Month                   
-    global Set_New_Patients_In_Existing_Clinic_Annual_Growth   
-    global Set_Patient_Attrition_Rate_Per_Month                
-    global Set_Percent_Patients_On_Medicare                    
-    global Set_Rental_Period_Refill_TOMA_CMS                   
-    global Set_Rental_Period_Refill_TOMA_PP                    
-    global Set_Rental_Period_Refill_CCG                        
-    global Set_Rental_Period_Refill_CDI                        
-    global Set_CMS_TOMA_CMS                                    
-    global Set_CMS_CCG                                         
-    global Set_CMS_CDI                                         
-    global Set_Private_Payer_Premium_Over_Medicare    
-         
-    if choice == "Optimistic":
-        Set_Initial_Number_Of_Clinics                       = 4
-        Set_Number_Of_New_Clinics_Monthly_Growth            = 20
-        Set_Patients_Per_Clinic_Per_Month                   = 8
-        Set_New_Patients_In_Existing_Clinic_Annual_Growth   = 20
-        Set_Patient_Attrition_Rate_Per_Month                = 40
-        Set_Percent_Patients_On_Medicare                    = 80
-        Set_Rental_Period_Refill_TOMA_CMS                   = 6
-        Set_Rental_Period_Refill_TOMA_PP                    = 4
-        Set_Rental_Period_Refill_CCG                        = 2
-        Set_Rental_Period_Refill_CDI                        = 1
-        Set_CMS_TOMA_CMS                                    = 900
-        Set_CMS_CCG                                         = 500
-        Set_CMS_CDI                                         = 30
-        Set_Private_Payer_Premium_Over_Medicare             = 50
-        
-    if choice == "Conservative":
-        Set_Initial_Number_Of_Clinics                       = 1
-        Set_Number_Of_New_Clinics_Monthly_Growth            = 5
-        Set_Patients_Per_Clinic_Per_Month                   = 2
-        Set_New_Patients_In_Existing_Clinic_Annual_Growth   = 5
-        Set_Patient_Attrition_Rate_Per_Month                = 10
-        Set_Percent_Patients_On_Medicare                    = 20
-        Set_Rental_Period_Refill_TOMA_CMS                   = 20
-        Set_Rental_Period_Refill_TOMA_PP                    = 12
-        Set_Rental_Period_Refill_CCG                        = 6
-        Set_Rental_Period_Refill_CDI                        = 2
-        Set_CMS_TOMA_CMS                                    = 225
-        Set_CMS_CCG                                         = 125
-        Set_CMS_CDI                                         = 7
-        Set_Private_Payer_Premium_Over_Medicare             = 20
-        
-    if choice == "Realistic":
-        Set_Initial_Number_Of_Clinics                       = 2
-        Set_Number_Of_New_Clinics_Monthly_Growth            = 10
-        Set_Patients_Per_Clinic_Per_Month                   = 4
-        Set_New_Patients_In_Existing_Clinic_Annual_Growth   = 10
-        Set_Patient_Attrition_Rate_Per_Month                = 20
-        Set_Percent_Patients_On_Medicare                    = 40
-        Set_Rental_Period_Refill_TOMA_CMS                   = 13
-        Set_Rental_Period_Refill_TOMA_PP                    = 6
-        Set_Rental_Period_Refill_CCG                        = 3
-        Set_Rental_Period_Refill_CDI                        = 1
-        Set_CMS_TOMA_CMS                                    = 450
-        Set_CMS_CCG                                         = 250
-        Set_CMS_CDI                                         = 14
-        Set_Private_Payer_Premium_Over_Medicare             = 40
     
+import streamlit as st
 
-# https://noctrixhealth.com/wp-content/uploads/2020/08/noctrix_logo_white.png white logo
+
+
+#testing
+
+
+
+
+
+
+
 col1, col2, col3 = st.columns(3)
 
 with col1:
@@ -158,9 +79,6 @@ with col1:
 with col2:
     Quarterly = st.checkbox("Plot Quarterly")
 
-with col3:
-    st.write("")
-        
 
 
 if choice == "Optimistic":
@@ -243,6 +161,8 @@ with st.sidebar.form(key='my_form'):
                                                                 max_value = 20,
                                                                 value = Set_Patients_Per_Clinic_Per_Month)
         
+        
+        
     with st.expander("👤Number of Patients Parameters"):                             
         New_Patients_In_Existing_Clinic_Annual_Growth   =     st.slider("New Patients In Existing Clinic Annual Growth [%]",
                                                                 min_value = 0,
@@ -271,6 +191,8 @@ with st.sidebar.form(key='my_form'):
     
     Number_Per_Kit_CDI                             =     4
     
+    
+    
     # Rental period / Refill frequency (months)
     with st.expander("📅 Rental / Refill Period"):
         Rental_Period_Refill_TOMA_CMS                 =     st.slider("Rental Period for TOMA when Medicare [months]",
@@ -293,6 +215,8 @@ with st.sidebar.form(key='my_form'):
                                                                 min_value = 0,
                                                                 max_value = 12,
                                                                 value = Set_Rental_Period_Refill_CDI) 
+        
+        
     with st.expander("💵 Reimbursement per unit"):    
     #Total CMS Reimbursement per unit
         CMS_TOMA_CMS                                 =     st.slider("Reimbursement per unit TOMA when Medicare [$]",
@@ -441,470 +365,439 @@ st.write("")
 qdf = df.groupby('Quarter').sum()
 qdf['Quarter'] = qdf.index
 
+        
 
-#%%
-
-import plotly.express as px
-import pandas as pd
-import plotly.graph_objects as go
-import plotly.io as pio
-
-import numpy as np
-
-
-
-
-fig = px.bar(
-    data_frame = df,
-    x = "Month",
-    y = ["Monthly_Revenue"], #,"Revenue_Devices"],
-    opacity = 0.5,
-    color_discrete_sequence=['MediumSlateBlue'],  
-    orientation = "v",
-    barmode = 'group',
-    title='Monthly Revenue',
-    labels={'x': 'Month', 'value':'Dollars USD'},
-)
-
-fig.update_layout(legend=dict(
-    yanchor="top",
-    y=0.99,
-    xanchor="left",
-    x=0.01
-))
-
-if not Quarterly:
-    st.plotly_chart(fig, use_container_width=True)
-
-
-
-
-fig = px.bar(
-    data_frame = df,
-    x = "Month",
-    y = ["Revenue_New_Patients","Revenue_Existing_Patients"],
-    opacity = 0.5,
-    color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
-    orientation = "v",
-    barmode = 'group',
-    title='Existing vs New Patient Revenue',
-    labels={'x': 'Month', 'value':'Dollars USD'},
-)
-
-fig.update_layout(legend=dict(
-    yanchor="top",
-    y=0.99,
-    xanchor="left",
-    x=0.01
-))
-
-if not Quarterly:
-    st.plotly_chart(fig, use_container_width=True)
-
-
-fig = px.bar(
-    data_frame = df,
-    x = "Month",
-    y = ["Revenue_Devices","Revenue_Consumables"],
-    opacity = 0.5,
-    color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
-    orientation = "v",
-    barmode = 'group',
-    title='Devices vs Consumables Revenue',
-    labels={'x': 'Month', 'value':'Dollars USD'},
-)
-
-fig.update_layout(legend=dict(
-    yanchor="top",
-    y=0.99,
-    xanchor="left",
-    x=0.01
-))
-
-if not Quarterly:
-    st.plotly_chart(fig, use_container_width=True)
-
-fig = px.line(
-    data_frame = df,
-    x = "Month",
-    y = ["Device_Percentage","Consumables_Percentage"],
-    color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
-    orientation = "v",
-    title='Devices vs Consumables Revenue',
-    labels={'x': 'Month', 'value':'% of revenue'},
-)
-
-fig.update_layout(legend=dict(
-    yanchor="top",
-    y=0.99,
-    xanchor="left",
-    x=0.01
-))
-
-if not Quarterly:
-    st.plotly_chart(fig, use_container_width=True)
-
-fig = px.bar(
-    data_frame = df,
-    x = "Month",
-    y = ["New_Clinics","Total_prescribing_clinics"],
-    opacity = 0.5,
-    color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
-    orientation = "v",
-    barmode = 'group',
-    title='Number of Clinics',
-    labels={'x': 'Month', 'value':'Number of Clinics'},
-)
-
-fig.update_layout(legend=dict(
-    yanchor="top",
-    y=0.99,
-    xanchor="left",
-    x=0.01
-))
-
-if not Quarterly:
-    st.plotly_chart(fig, use_container_width=True)
-
-fig = px.bar(
-    data_frame = df,
-    x = "Month",
-    y = ['New_patients_by_month','Total_patients'],
-    opacity = 0.5,
-    color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
-    orientation = "v",
-    barmode = 'group',
-    title='Number of Patients',
-    labels={'x': 'Month', 'value':'Number of Patients'},
-)
-
-fig.update_layout(legend=dict(
-    yanchor="top",
-    y=0.99,
-    xanchor="left",
-    x=0.01
-))
-
-if not Quarterly:
-    st.plotly_chart(fig, use_container_width=True)
-
-#%%
 qdf['Revenue'] = qdf['Monthly_Revenue']
 
-fig = px.bar(
-    data_frame = qdf,
-    x = "Quarter",
-    y = ["Revenue"], #,"Revenue_Devices"],
-    opacity = 0.5,
-    color_discrete_sequence=['MediumSlateBlue'],  
-    orientation = "v",
-    barmode = 'group',
-    title='Quarterly Revenue',
-    labels={'x': 'Quarter', 'value':'Dollars USD'},
-)
+if not Quarterly:
+    fig = px.bar(
+        data_frame = df,
+        x = "Month",
+        y = ["Monthly_Revenue"], #,"Revenue_Devices"],
+        opacity = 0.5,
+        color_discrete_sequence=['MediumSlateBlue'],  
+        orientation = "v",
+        barmode = 'group',
+        title='Monthly Revenue',
+        labels={'x': 'Month', 'value':'Dollars USD'},
+    )
 
-fig.update_layout(legend=dict(
-    yanchor="top",
-    y=0.99,
-    xanchor="left",
-    x=0.01
-))
+    fig.update_layout(legend=dict(
+        yanchor="top",
+        y=0.99,
+        xanchor="left",
+        x=0.01
+    ))
 
-if Quarterly:
     st.plotly_chart(fig, use_container_width=True)
 
 
 
-fig = px.bar(
-    data_frame = qdf,
-    x = "Quarter",
-    y = ["Revenue_New_Patients","Revenue_Existing_Patients"],
-    opacity = 0.5,
-    color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
-    orientation = "v",
-    barmode = 'group',
-    title='Existing vs New Patient Revenue',
-    labels={'x': 'Quarter', 'value':'Dollars USD'},
-)
 
-fig.update_layout(legend=dict(
-    yanchor="top",
-    y=0.99,
-    xanchor="left",
-    x=0.01
-))
+    fig = px.bar(
+        data_frame = df,
+        x = "Month",
+        y = ["Revenue_New_Patients","Revenue_Existing_Patients"],
+        opacity = 0.5,
+        color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
+        orientation = "v",
+        barmode = 'group',
+        title='Existing vs New Patient Revenue',
+        labels={'x': 'Month', 'value':'Dollars USD'},
+    )
 
-if Quarterly:
+    fig.update_layout(legend=dict(
+        yanchor="top",
+        y=0.99,
+        xanchor="left",
+        x=0.01
+    ))
+
     st.plotly_chart(fig, use_container_width=True)
 
 
-fig = px.bar(
-    data_frame = qdf,
-    x = "Quarter",
-    y = ["Revenue_Devices","Revenue_Consumables"],
-    opacity = 0.5,
-    color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
-    orientation = "v",
-    barmode = 'group',
-    title='Devices vs Consumables Revenue',
-    labels={'x': 'Quarter', 'value':'Dollars USD'},
-)
+    fig = px.bar(
+        data_frame = df,
+        x = "Month",
+        y = ["Revenue_Devices","Revenue_Consumables"],
+        opacity = 0.5,
+        color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
+        orientation = "v",
+        barmode = 'group',
+        title='Devices vs Consumables Revenue',
+        labels={'x': 'Month', 'value':'Dollars USD'},
+    )
 
-fig.update_layout(legend=dict(
-    yanchor="top",
-    y=0.99,
-    xanchor="left",
-    x=0.01
-))
+    fig.update_layout(legend=dict(
+        yanchor="top",
+        y=0.99,
+        xanchor="left",
+        x=0.01
+    ))
 
-
-if Quarterly:
     st.plotly_chart(fig, use_container_width=True)
 
-fig = px.line(
-    data_frame = qdf,
-    x = "Quarter",
-    y = ["Device_Percentage","Consumables_Percentage"],
-    color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
-    orientation = "v",
-    title='Devices vs Consumables Revenue',
-    labels={'x': 'Quarter', 'value':'% of revenue'},
-)
+    fig = px.line(
+        data_frame = df,
+        x = "Month",
+        y = ["Device_Percentage","Consumables_Percentage"],
+        color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
+        orientation = "v",
+        title='Devices vs Consumables Revenue',
+        labels={'x': 'Month', 'value':'% of revenue'},
+    )
 
-fig.update_layout(legend=dict(
-    yanchor="top",
-    y=0.99,
-    xanchor="left",
-    x=0.01
-))
+    fig.update_layout(legend=dict(
+        yanchor="top",
+        y=0.99,
+        xanchor="left",
+        x=0.01
+    ))
 
-
-if Quarterly:
     st.plotly_chart(fig, use_container_width=True)
 
-fig = px.bar(
-    data_frame = qdf,
-    x = "Quarter",
-    y = ["New_Clinics","Total_prescribing_clinics"],
-    opacity = 0.5,
-    color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
-    orientation = "v",
-    barmode = 'group',
-    title='Number of Clinics',
-    labels={'x': 'Quarter', 'value':'Number of Clinics'},
-)
+    fig = px.bar(
+        data_frame = df,
+        x = "Month",
+        y = ["New_Clinics","Total_prescribing_clinics"],
+        opacity = 0.5,
+        color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
+        orientation = "v",
+        barmode = 'group',
+        title='Number of Clinics',
+        labels={'x': 'Month', 'value':'Number of Clinics'},
+    )
 
-fig.update_layout(legend=dict(
-    yanchor="top",
-    y=0.99,
-    xanchor="left",
-    x=0.01
-))
+    fig.update_layout(legend=dict(
+        yanchor="top",
+        y=0.99,
+        xanchor="left",
+        x=0.01
+    ))
 
-if Quarterly:
     st.plotly_chart(fig, use_container_width=True)
 
-fig = px.bar(
-    data_frame = qdf,
-    x = "Quarter",
-    y = ['New_patients_by_month','Total_patients'],
-    opacity = 0.5,
-    color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
-    orientation = "v",
-    barmode = 'group',
-    title='Number of Patients',
-    labels={'x': 'Quarter', 'value':'Number of Patients'},
-)
+    fig = px.bar(
+        data_frame = df,
+        x = "Month",
+        y = ['New_patients_by_month','Total_patients'],
+        opacity = 0.5,
+        color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
+        orientation = "v",
+        barmode = 'group',
+        title='Number of Patients',
+        labels={'x': 'Month', 'value':'Number of Patients'},
+    )
 
-fig.update_layout(legend=dict(
-    yanchor="top",
-    y=0.99,
-    xanchor="left",
-    x=0.01
-))
+    fig.update_layout(legend=dict(
+        yanchor="top",
+        y=0.99,
+        xanchor="left",
+        x=0.01
+    ))
 
-
-if Quarterly:
     st.plotly_chart(fig, use_container_width=True)
-
     
-#%% PDF
+# display Quaterly plots
 
-from fpdf import FPDF
-import matplotlib.pyplot as plt 
-
-pdf = FPDF(orientation="P", unit="mm", format="Letter")
-pdf.add_page()
-pdf.set_font("helvetica", "B", 16)
-pdf.image("Logo.png",x=10,y=10,w=40)
-
-pdf.cell(190, 40, "Revenue Estimation Report", ln=1, align='C')
-
-pdf.cell(40,5,"Input Parameters to Model",ln=1)
-
-pdf.set_font("helvetica", "", 14)
-
-pdf.ln(1)
-
-rh = 7 # row height
-
-pdf.cell(150,rh,"Initial Number Of Clinics",border=1)
-pdf.cell(40,rh,str(Initial_Number_Of_Clinics),border=1)
-pdf.ln(rh)
-pdf.cell(150,rh,"Number Of New Clinics Monthly Growth",border=1)
-pdf.cell(40,rh,str(Number_Of_New_Clinics_Monthly_Growth*100)+'%',border=1)
-pdf.ln(rh)
-pdf.cell(150,rh,"Patients Per Clinic Per Month",border=1)
-pdf.cell(40,rh,str(Patients_Per_Clinic_Per_Month),border=1)
-pdf.ln(rh)
-pdf.cell(150,rh,"New Patients In Existing Clinic Annual Growth",border=1)
-pdf.cell(40,rh,str(New_Patients_In_Existing_Clinic_Annual_Growth*100)+'%',border=1)
-pdf.ln(rh)
-pdf.cell(150,rh,"Patient Attrition Rate Per Month",border=1)
-pdf.cell(40,rh,str(Patient_Attrition_Rate_Per_Month*100)+'%',border=1)
-pdf.ln(rh)
-pdf.cell(150,rh,"Percent Patients On Medicare",border=1)
-pdf.cell(40,rh,str(Percent_Patients_On_Medicare*100)+'%',border=1)
-pdf.ln(rh)
-pdf.cell(150,rh,"Rental Period Refill TOMA CMS",border=1)
-pdf.cell(40,rh,str(Rental_Period_Refill_TOMA_CMS)+' months',border=1)
-pdf.ln(rh)
-pdf.cell(150,rh,"Rental Period Refill TOMA PP",border=1)
-pdf.cell(40,rh,str(Rental_Period_Refill_TOMA_PP)+' months',border=1)
-pdf.ln(rh)
-pdf.cell(150,rh,"Rental Period Refill CCG",border=1)
-pdf.cell(40,rh,str(Rental_Period_Refill_CCG)+' months',border=1)
-pdf.ln(rh)
-pdf.cell(150,rh,"Rental Period Refill CDI ",border=1)
-pdf.cell(40,rh,str(Rental_Period_Refill_CDI)+' months',border=1)
-pdf.ln(rh)
-pdf.cell(150,rh,"CMS TOMA CMS ",border=1)
-pdf.cell(40,rh,'$'+str(CMS_TOMA_CMS),border=1)
-pdf.ln(rh)
-pdf.cell(150,rh,"CMS CCG",border=1)
-pdf.cell(40,rh,'$'+str(CMS_CCG),border=1)
-pdf.ln(rh)
-pdf.cell(150,rh,"CMS CDI",border=1)
-pdf.cell(40,rh,'$'+str(CMS_CDI),border=1)
-pdf.ln(rh)
-pdf.cell(150,rh,"Private Payer Premium Over Medicare",border=1)
-pdf.cell(40,rh,str(Private_Payer_Premium_Over_Medicare*100)+'%',border=1)
-pdf.ln(rh)
-
-
-#  next page begins plots
-
-pdf.add_page()
-
-
-X = qdf['Quarter'].astype(int)
-Y = qdf['Monthly_Revenue']
-
-X_axis = np.arange(len(X))
-
-plt.figure(dpi=250)  
-plt.bar(X_axis - 0.2, Y, 0.4, label = 'Revenue',color='MediumSlateBlue', alpha=0.7)
-
-  
-plt.xticks(X_axis, X)
-plt.xlabel("Quarter")
-plt.ylabel("Dollars USD")
-plt.title("Revenue")
-plt.legend()
-plt.savefig('plot.png')
-pdf.image("plot.png",x=10,y=10,w=180)
-plt.show()
-
-
-Y = qdf['Revenue_New_Patients']
-Z = qdf['Revenue_Existing_Patients']
-
-
-
-plt.figure(dpi=250)    
-plt.bar(X_axis - 0.2, Y, 0.4, label = 'Revenue New Patients',color='deepskyblue', alpha=0.7)
-plt.bar(X_axis + 0.2, Z, 0.4, label = 'Revenue Existing Patients',color='MediumSlateBlue', alpha=0.7)
-  
-plt.xticks(X_axis, X)
-plt.xlabel("Quarter")
-plt.ylabel("Dollars USD")
-plt.title("Revenue From New vs Existing Patients")
-plt.legend()
-plt.savefig('plot2.png')
-pdf.image("plot2.png",x=10,y=140,w=180)
-plt.show()
-
-
-# next page   =============
-
-pdf.add_page()
-
-Y = qdf['New_Clinics']
-Z = qdf['Total_prescribing_clinics']
-
-plt.figure(dpi=250)    
-plt.bar(X_axis - 0.2, Y, 0.4, label = 'New Clinics',color='deepskyblue', alpha=0.7)
-plt.bar(X_axis + 0.2, Z, 0.4, label = 'Total prescribing clinics',color='MediumSlateBlue', alpha=0.7)
-  
-plt.xticks(X_axis, X)
-plt.xlabel("Quarter")
-plt.ylabel("Clinics")
-plt.title("New vs Total Prescibing Clinics")
-plt.legend()
-plt.savefig('plot3.png')
-pdf.image("plot3.png",x=10,y=10,w=180)
-plt.show()
-
-
-Y = qdf['New_patients_by_month']
-Z = qdf['Total_patients']
-
-
-
-plt.figure(dpi=250)    
-plt.bar(X_axis - 0.2, Y, 0.4, label = 'New patients by month',color='deepskyblue', alpha=0.7)
-plt.bar(X_axis + 0.2, Z, 0.4, label = 'Total patients',color='MediumSlateBlue', alpha=0.7)
-  
-plt.xticks(X_axis, X)
-plt.xlabel("Quarter")
-plt.ylabel("Patients")
-plt.title("New Patient vs Total Patients")
-plt.legend()
-plt.savefig('plot4.png')
-pdf.image("plot4.png",x=10,y=140,w=180)
-plt.show()
-
-
-# next page   =============
-
-   
-
-pdf.output("Report1.pdf")
-
-with open("Report1.pdf", "rb") as pdf_file:
-    PDFbyte = pdf_file.read()
-
-
-st.download_button(
-    "⬇️ Download PDF",
-    data=PDFbyte,
-    file_name="Revenue Estimation.pdf",
-    mime="application/octet-stream",
-)
-
+if Quarterly:
+    fig = px.bar(
+        data_frame = qdf,
+        x = "Quarter",
+        y = ["Revenue"], #,"Revenue_Devices"],
+        opacity = 0.5,
+        color_discrete_sequence=['MediumSlateBlue'],  
+        orientation = "v",
+        barmode = 'group',
+        title='Quarterly Revenue',
+        labels={'x': 'Quarter', 'value':'Dollars USD'},
+    )
+    
+    fig.update_layout(legend=dict(
+        yanchor="top",
+        y=0.99,
+        xanchor="left",
+        x=0.01
+    ))
+    
+    st.plotly_chart(fig, use_container_width=True)
+    
+    
+    
+    fig = px.bar(
+        data_frame = qdf,
+        x = "Quarter",
+        y = ["Revenue_New_Patients","Revenue_Existing_Patients"],
+        opacity = 0.5,
+        color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
+        orientation = "v",
+        barmode = 'group',
+        title='Existing vs New Patient Revenue',
+        labels={'x': 'Quarter', 'value':'Dollars USD'},
+    )
+    
+    fig.update_layout(legend=dict(
+        yanchor="top",
+        y=0.99,
+        xanchor="left",
+        x=0.01
+    ))
+    
+    st.plotly_chart(fig, use_container_width=True)
+    
+    
+    fig = px.bar(
+        data_frame = qdf,
+        x = "Quarter",
+        y = ["Revenue_Devices","Revenue_Consumables"],
+        opacity = 0.5,
+        color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
+        orientation = "v",
+        barmode = 'group',
+        title='Devices vs Consumables Revenue',
+        labels={'x': 'Quarter', 'value':'Dollars USD'},
+    )
+    
+    fig.update_layout(legend=dict(
+        yanchor="top",
+        y=0.99,
+        xanchor="left",
+        x=0.01
+    ))
+    
+    
+    st.plotly_chart(fig, use_container_width=True)
+    
+    fig = px.line(
+        data_frame = qdf,
+        x = "Quarter",
+        y = ["Device_Percentage","Consumables_Percentage"],
+        color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
+        orientation = "v",
+        title='Devices vs Consumables Revenue',
+        labels={'x': 'Quarter', 'value':'% of revenue'},
+    )
+    
+    fig.update_layout(legend=dict(
+        yanchor="top",
+        y=0.99,
+        xanchor="left",
+        x=0.01
+    ))
+    
+    
+    st.plotly_chart(fig, use_container_width=True)
+    
+    fig = px.bar(
+        data_frame = qdf,
+        x = "Quarter",
+        y = ["New_Clinics","Total_prescribing_clinics"],
+        opacity = 0.5,
+        color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
+        orientation = "v",
+        barmode = 'group',
+        title='Number of Clinics',
+        labels={'x': 'Quarter', 'value':'Number of Clinics'},
+    )
+    
+    fig.update_layout(legend=dict(
+        yanchor="top",
+        y=0.99,
+        xanchor="left",
+        x=0.01
+    ))
+    
+    st.plotly_chart(fig, use_container_width=True)
+    
+    fig = px.bar(
+        data_frame = qdf,
+        x = "Quarter",
+        y = ['New_patients_by_month','Total_patients'],
+        opacity = 0.5,
+        color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
+        orientation = "v",
+        barmode = 'group',
+        title='Number of Patients',
+        labels={'x': 'Quarter', 'value':'Number of Patients'},
+    )
+    
+    fig.update_layout(legend=dict(
+        yanchor="top",
+        y=0.99,
+        xanchor="left",
+        x=0.01
+    ))
+    
+    
+    st.plotly_chart(fig, use_container_width=True)
 
 #%%
 
 with st.expander("Calculations"):
     st.write('Monthly')
+    #df2 = df.T.style.format("{:.2}")
     df.T
     st.write('Quarterly')
+    #qdf2 = qdf.T.style.format("{:.2}")
     qdf.T
     
 with st.expander("Amortization Matrix"):
     One_patient_amortization
     
-    
+
+with col3:
+     PDFgen = st.button(f"⚙️ Generate PDF")
+     if PDFgen:
+        with st.spinner('Generating PDF...'):
+            pdf = FPDF(orientation="P", unit="mm", format="Letter")
+            pdf.add_page()
+            pdf.set_font("helvetica", "B", 16)
+            pdf.image("Logo.png",x=10,y=10,w=40)
+
+            pdf.cell(190, 40, "Revenue Estimation Report", ln=1, align='C')
+
+            pdf.cell(40,5,"Input Parameters to Model",ln=1)
+
+            pdf.set_font("helvetica", "", 14)
+
+            pdf.ln(1)
+
+            rh = 7 # row height
+
+            pdf.cell(150,rh,"Initial Number Of Clinics",border=1)
+            pdf.cell(40,rh,str(Initial_Number_Of_Clinics),border=1)
+            pdf.ln(rh)
+            pdf.cell(150,rh,"Number Of New Clinics Monthly Growth",border=1)
+            pdf.cell(40,rh,str(Number_Of_New_Clinics_Monthly_Growth*100)+'%',border=1)
+            pdf.ln(rh)
+            pdf.cell(150,rh,"Patients Per Clinic Per Month",border=1)
+            pdf.cell(40,rh,str(Patients_Per_Clinic_Per_Month),border=1)
+            pdf.ln(rh)
+            pdf.cell(150,rh,"New Patients In Existing Clinic Annual Growth",border=1)
+            pdf.cell(40,rh,str(New_Patients_In_Existing_Clinic_Annual_Growth*100)+'%',border=1)
+            pdf.ln(rh)
+            pdf.cell(150,rh,"Patient Attrition Rate Per Month",border=1)
+            pdf.cell(40,rh,str(Patient_Attrition_Rate_Per_Month*100)+'%',border=1)
+            pdf.ln(rh)
+            pdf.cell(150,rh,"Percent Patients On Medicare",border=1)
+            pdf.cell(40,rh,str(Percent_Patients_On_Medicare*100)+'%',border=1)
+            pdf.ln(rh)
+            pdf.cell(150,rh,"Rental Period Refill TOMA CMS",border=1)
+            pdf.cell(40,rh,str(Rental_Period_Refill_TOMA_CMS)+' months',border=1)
+            pdf.ln(rh)
+            pdf.cell(150,rh,"Rental Period Refill TOMA PP",border=1)
+            pdf.cell(40,rh,str(Rental_Period_Refill_TOMA_PP)+' months',border=1)
+            pdf.ln(rh)
+            pdf.cell(150,rh,"Rental Period Refill CCG",border=1)
+            pdf.cell(40,rh,str(Rental_Period_Refill_CCG)+' months',border=1)
+            pdf.ln(rh)
+            pdf.cell(150,rh,"Rental Period Refill CDI ",border=1)
+            pdf.cell(40,rh,str(Rental_Period_Refill_CDI)+' months',border=1)
+            pdf.ln(rh)
+            pdf.cell(150,rh,"CMS TOMA CMS ",border=1)
+            pdf.cell(40,rh,'$'+str(CMS_TOMA_CMS),border=1)
+            pdf.ln(rh)
+            pdf.cell(150,rh,"CMS CCG",border=1)
+            pdf.cell(40,rh,'$'+str(CMS_CCG),border=1)
+            pdf.ln(rh)
+            pdf.cell(150,rh,"CMS CDI",border=1)
+            pdf.cell(40,rh,'$'+str(CMS_CDI),border=1)
+            pdf.ln(rh)
+            pdf.cell(150,rh,"Private Payer Premium Over Medicare",border=1)
+            pdf.cell(40,rh,str(Private_Payer_Premium_Over_Medicare*100)+'%',border=1)
+            pdf.ln(rh)
+
+
+            #  next page begins plots
+
+            pdf.add_page()
+
+
+            X = qdf['Quarter'].astype(int)
+            Y = qdf['Monthly_Revenue']
+
+            X_axis = np.arange(len(X))
+
+            plt.figure(dpi=250)  
+            plt.bar(X_axis - 0.2, Y, 0.4, label = 'Revenue',color='MediumSlateBlue', alpha=0.7)
+
+              
+            plt.xticks(X_axis, X)
+            plt.xlabel("Quarter")
+            plt.ylabel("Dollars USD")
+            plt.title("Revenue")
+            plt.legend()
+            plt.savefig('plot.png')
+            pdf.image("plot.png",x=10,y=10,w=180)
 
 
 
+            Y = qdf['Revenue_New_Patients']
+            Z = qdf['Revenue_Existing_Patients']
+
+
+
+            plt.figure(dpi=250)    
+            plt.bar(X_axis - 0.2, Y, 0.4, label = 'Revenue New Patients',color='deepskyblue', alpha=0.7)
+            plt.bar(X_axis + 0.2, Z, 0.4, label = 'Revenue Existing Patients',color='MediumSlateBlue', alpha=0.7)
+              
+            plt.xticks(X_axis, X)
+            plt.xlabel("Quarter")
+            plt.ylabel("Dollars USD")
+            plt.title("Revenue From New vs Existing Patients")
+            plt.legend()
+            plt.savefig('plot2.png')
+            pdf.image("plot2.png",x=10,y=140,w=180)
+
+
+
+            # next page   =============
+
+            pdf.add_page()
+
+            Y = qdf['New_Clinics']
+            Z = qdf['Total_prescribing_clinics']
+
+            plt.figure(dpi=250)    
+            plt.bar(X_axis - 0.2, Y, 0.4, label = 'New Clinics',color='deepskyblue', alpha=0.7)
+            plt.bar(X_axis + 0.2, Z, 0.4, label = 'Total prescribing clinics',color='MediumSlateBlue', alpha=0.7)
+              
+            plt.xticks(X_axis, X)
+            plt.xlabel("Quarter")
+            plt.ylabel("Clinics")
+            plt.title("New vs Total Prescibing Clinics")
+            plt.legend()
+            plt.savefig('plot3.png')
+            pdf.image("plot3.png",x=10,y=10,w=180)
+
+
+
+            Y = qdf['New_patients_by_month']
+            Z = qdf['Total_patients']
+
+
+
+            plt.figure(dpi=250)    
+            plt.bar(X_axis - 0.2, Y, 0.4, label = 'New patients by month',color='deepskyblue', alpha=0.7)
+            plt.bar(X_axis + 0.2, Z, 0.4, label = 'Total patients',color='MediumSlateBlue', alpha=0.7)
+              
+            plt.xticks(X_axis, X)
+            plt.xlabel("Quarter")
+            plt.ylabel("Patients")
+            plt.title("New Patient vs Total Patients")
+            plt.legend()
+            plt.savefig('plot4.png')
+            pdf.image("plot4.png",x=10,y=140,w=180)
+            pdf.output("Report1.pdf")
+
+            with open("Report1.pdf", "rb") as pdf_file:
+                PDFbyte = pdf_file.read()
+                
+        st.success('📃 PDF Created!') 
+        
+        st.download_button(
+            "⬇️ Download PDF",
+            data=PDFbyte,
+            file_name="Revenue Estimation.pdf",
+            mime="application/octet-stream",
+        )
