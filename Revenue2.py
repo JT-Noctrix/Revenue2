@@ -74,51 +74,34 @@ col1, col2, col3 = st.columns(3)
 with col1:
     choice = st.radio(
      "Choose Preset",
-     ('Optimistic', 'Conservative', 'Realistic'))
+     ('Optimistic', 'Conservative', 'Realistic'), index=2)
 
 with col2:
     Quarterly = st.checkbox("Plot Quarterly")
 
-
-
-if choice == "Optimistic":
-    Set_Initial_Number_Of_Clinics                       = 4
-    Set_Number_Of_New_Clinics_Monthly_Growth            = 20
-    Set_Patients_Per_Clinic_Per_Month                   = 8
-    Set_New_Patients_In_Existing_Clinic_Annual_Growth   = 20
-    Set_Patient_Attrition_Rate_Per_Month                = 40
-    Set_Percent_Patients_On_Medicare                    = 80
-    Set_Rental_Period_Refill_TOMA_CMS                   = 6
-    Set_Rental_Period_Refill_TOMA_PP                    = 4
-    Set_Rental_Period_Refill_CCG                        = 2
-    Set_Rental_Period_Refill_CDI                        = 1
-    Set_CMS_TOMA_CMS                                    = 900
-    Set_CMS_CCG                                         = 500
-    Set_CMS_CDI                                         = 30
-    Set_Private_Payer_Premium_Over_Medicare             = 50
-    
 if choice == "Conservative":
     Set_Initial_Number_Of_Clinics                       = 1
     Set_Number_Of_New_Clinics_Monthly_Growth            = 5
     Set_Patients_Per_Clinic_Per_Month                   = 2
     Set_New_Patients_In_Existing_Clinic_Annual_Growth   = 5
-    Set_Patient_Attrition_Rate_Per_Month                = 10
-    Set_Percent_Patients_On_Medicare                    = 20
-    Set_Rental_Period_Refill_TOMA_CMS                   = 20
-    Set_Rental_Period_Refill_TOMA_PP                    = 12
-    Set_Rental_Period_Refill_CCG                        = 6
-    Set_Rental_Period_Refill_CDI                        = 2
-    Set_CMS_TOMA_CMS                                    = 225
-    Set_CMS_CCG                                         = 125
+    Set_Patient_Attrition_Rate_Per_Month                = 15
+    Set_Percent_Patients_On_Medicare                    = 60
+    Set_Rental_Period_Refill_TOMA_CMS                   = 13
+    Set_Rental_Period_Refill_TOMA_PP                    = 9
+    Set_Rental_Period_Refill_CCG                        = 3
+    Set_Rental_Period_Refill_CDI                        = 1
+    Set_CMS_TOMA_CMS                                    = 300
+    Set_CMS_CCG                                         = 150
     Set_CMS_CDI                                         = 7
-    Set_Private_Payer_Premium_Over_Medicare             = 20
-    
+    Set_Private_Payer_Premium_Over_Medicare             = 15
+
+
 if choice == "Realistic":
     Set_Initial_Number_Of_Clinics                       = 2
     Set_Number_Of_New_Clinics_Monthly_Growth            = 10
     Set_Patients_Per_Clinic_Per_Month                   = 4
     Set_New_Patients_In_Existing_Clinic_Annual_Growth   = 10
-    Set_Patient_Attrition_Rate_Per_Month                = 20
+    Set_Patient_Attrition_Rate_Per_Month                = 10
     Set_Percent_Patients_On_Medicare                    = 40
     Set_Rental_Period_Refill_TOMA_CMS                   = 13
     Set_Rental_Period_Refill_TOMA_PP                    = 6
@@ -128,6 +111,27 @@ if choice == "Realistic":
     Set_CMS_CCG                                         = 250
     Set_CMS_CDI                                         = 14
     Set_Private_Payer_Premium_Over_Medicare             = 40
+    
+    
+if choice == "Optimistic":
+    Set_Initial_Number_Of_Clinics                       = 4
+    Set_Number_Of_New_Clinics_Monthly_Growth            = 20
+    Set_Patients_Per_Clinic_Per_Month                   = 6
+    Set_New_Patients_In_Existing_Clinic_Annual_Growth   = 15
+    Set_Patient_Attrition_Rate_Per_Month                = 5
+    Set_Percent_Patients_On_Medicare                    = 30
+    Set_Rental_Period_Refill_TOMA_CMS                   = 13
+    Set_Rental_Period_Refill_TOMA_PP                    = 4
+    Set_Rental_Period_Refill_CCG                        = 3
+    Set_Rental_Period_Refill_CDI                        = 1
+    Set_CMS_TOMA_CMS                                    = 750
+    Set_CMS_CCG                                         = 375
+    Set_CMS_CDI                                         = 30
+    Set_Private_Payer_Premium_Over_Medicare             = 50
+    
+
+    
+
     
 with st.sidebar.form(key='my_form'):
     # logo in sidebar
@@ -148,36 +152,40 @@ with st.sidebar.form(key='my_form'):
     with st.expander("🏥 Number of Clinic Parameters"):
         Initial_Number_Of_Clinics                       =     st.slider("Initial Number Of Clinics [#]",
                                                                 min_value = 0,
-                                                                max_value = 10,
+                                                                max_value = 5,
                                                                 value = Set_Initial_Number_Of_Clinics)
     
-        Number_Of_New_Clinics_Monthly_Growth            =     st.slider("Number Of New Clinics Monthly Growth [%]",
+        Number_Of_New_Clinics_Monthly_Growth            =     st.slider("Number Of New Clinics Monthly Growth",
                                                                 min_value = 0,
-                                                                max_value = 100,
-                                                                value = Set_Number_Of_New_Clinics_Monthly_Growth)*.01
+                                                                max_value = 40,
+                                                                value = Set_Number_Of_New_Clinics_Monthly_Growth,
+                                                                format="%i%%")*.01
                
         Patients_Per_Clinic_Per_Month                   =     st.slider("Patients Per Clinic Per Month [#]",
                                                                 min_value = 0,
-                                                                max_value = 20,
+                                                                max_value = 10,
                                                                 value = Set_Patients_Per_Clinic_Per_Month)
         
         
         
     with st.expander("👤Number of Patients Parameters"):                             
-        New_Patients_In_Existing_Clinic_Annual_Growth   =     st.slider("New Patients In Existing Clinic Annual Growth [%]",
+        New_Patients_In_Existing_Clinic_Annual_Growth   =     st.slider("New Patients In Existing Clinic Annual Growth",
                                                                 min_value = 0,
-                                                                max_value = 100,
+                                                                max_value = 25,
                                                                 value = Set_New_Patients_In_Existing_Clinic_Annual_Growth)*.01
         
-        Patient_Attrition_Rate_Per_Month                =     st.slider("Patient Attrition Rate Per Month [%]",
+        Patient_Attrition_Rate_Per_Month                =     st.slider("Patient Attrition Rate Per Month",
                                                                 min_value = 0,
-                                                                max_value = 100,
-                                                                value = Set_Patient_Attrition_Rate_Per_Month)*.01
+                                                                max_value = 25,
+                                                                value = Set_Patient_Attrition_Rate_Per_Month,
+                                                                format="%i%%")*.01
         
-        Percent_Patients_On_Medicare                    =     st.slider("Percent Patients On Medicare [%]",
+        
+        Percent_Patients_On_Medicare                    =     st.slider("Percent Patients On Medicare",
                                                                 min_value = 0,
                                                                 max_value = 100,
-                                                                value = Set_Percent_Patients_On_Medicare)*.01
+                                                                value = Set_Percent_Patients_On_Medicare,
+                                                                format="%i%%")*.01
     
 
     
@@ -198,49 +206,54 @@ with st.sidebar.form(key='my_form'):
         Rental_Period_Refill_TOMA_CMS                 =     st.slider("Rental Period for TOMA when Medicare [months]",
                                                                 min_value = 0,
                                                                 max_value = 24,
-                                                                value = Set_Rental_Period_Refill_TOMA_CMS)
+                                                                value = Set_Rental_Period_Refill_TOMA_CMS, disabled=True)
                                                           
         
         Rental_Period_Refill_TOMA_PP                  =     st.slider("Rental Period for TOMA when Private [months]",
                                                                 min_value = 0,
-                                                                max_value = 24,
+                                                                max_value = 13,
                                                                 value = Set_Rental_Period_Refill_TOMA_PP)
         
         Rental_Period_Refill_CCG                      =     st.slider("Refill Period for CCG [months]",
                                                                 min_value = 0,
                                                                 max_value = 12,
-                                                                value = Set_Rental_Period_Refill_CCG)       
+                                                                value = Set_Rental_Period_Refill_CCG, disabled=True)       
         
-        Rental_Period_Refill_CDI                      =     st.slider("Refill Period for CCG [months]",
+        Rental_Period_Refill_CDI                      =     st.slider("Refill Period for CDI [months]",
                                                                 min_value = 0,
                                                                 max_value = 12,
-                                                                value = Set_Rental_Period_Refill_CDI) 
+                                                                value = Set_Rental_Period_Refill_CDI, disabled=True) 
         
         
     with st.expander("💵 Reimbursement per unit"):    
     #Total CMS Reimbursement per unit
-        CMS_TOMA_CMS                                 =     st.slider("Reimbursement per unit TOMA when Medicare [$]",
+        CMS_TOMA_CMS                                 =     st.slider("Reimbursement per unit TOMA when Medicare",
                                                                 min_value = 0,
-                                                                max_value = 5000,
-                                                                value = Set_CMS_TOMA_CMS)
+                                                                max_value = 1000,
+                                                                value = Set_CMS_TOMA_CMS,
+                                                                format="$%i")
         
-        CMS_CCG                                      =     st.slider("Reimbursement per unit CCG [$]",
+        CMS_CCG                                      =     st.slider("Reimbursement per unit CCG",
                                                                 min_value = 0,
                                                                 max_value = 500,
-                                                                value = Set_CMS_CCG)
-        CMS_CDI                                       =     st.slider("Reimbursement per unit CDI [$]",
-                                                                min_value = 0,
-                                                                max_value = 100,
-                                                                value = Set_CMS_CDI)
+                                                                value = Set_CMS_CCG,
+                                                                format="$%i")
         
-        Private_Payer_Premium_Over_Medicare             =     st.slider("Private Payer Premium Over Medicare [%]",
+        CMS_CDI                                       =     st.slider("Reimbursement per unit CDI",
+                                                                min_value = 0,
+                                                                max_value = 50,
+                                                                value = Set_CMS_CDI,
+                                                                format="$%i")
+        
+        Private_Payer_Premium_Over_Medicare             =     st.slider("Private Payer Premium Over Medicare",
                                                                 min_value = 0,
                                                                 max_value = 100,
-                                                                value = Set_Private_Payer_Premium_Over_Medicare)*.01
+                                                                value = Set_Private_Payer_Premium_Over_Medicare,
+                                                                format="%i%%")*.01
     
     
-    submit_button = st.form_submit_button(label='Calculate!', on_click=form_callback)
-    st.write("Please contact if ranges need to be adjusted")
+    submit_button = st.form_submit_button(label='🖩 Calculate', on_click=form_callback)
+
     
 #%% Calculations
 
