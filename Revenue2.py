@@ -376,9 +376,11 @@ df = pd.DataFrame({
 st.write("")
 st.write("")
 
-qdf = df.groupby('Quarter').sum()
-qdf['Quarter'] = qdf.index
+qdf    = df.groupby('Quarter').sum()
+qdfMax = df.groupby('Quarter').max()  # for patient count
 
+qdf['Quarter'] = qdf.index
+qdfMax['Quarter'] = qdfMax.index
         
 
 qdf['Revenue'] = qdf['Monthly_Revenue']
@@ -624,7 +626,7 @@ if Quarterly:
     st.plotly_chart(fig, use_container_width=True)
     
     fig = px.bar(
-        data_frame = qdf,
+        data_frame = qdfMax,
         x = "Quarter",
         y = ['New_patients_by_month','Total_patients'],
         opacity = 0.5,
@@ -786,8 +788,8 @@ with col3:
 
 
 
-            Y = qdf['New_patients_by_month']
-            Z = qdf['Total_patients']
+            Y = qdfMax['New_patients_by_month']
+            Z = qdfMax['Total_patients']
 
 
 
