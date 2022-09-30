@@ -803,7 +803,7 @@ with st.expander("Calculations"):
     qdf.T
     st.write('Annually')
     #qdf2 = qdf.T.style.format("{:.2}")
-    ydfdf.T
+    ydf.T
     
 with st.expander("Amortization Matrix"):
     One_patient_amortization
