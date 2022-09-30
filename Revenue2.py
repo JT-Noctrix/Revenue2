@@ -77,7 +77,7 @@ with col1:
 with col2:
     Periodicity = st.radio(
      "Periodicity:",
-     ('Annual', 'Quarterly', 'Monthly'), index=1, disabled=False)
+     ('Yearly', 'Quarterly', 'Monthly'), index=1, disabled=False)
 
 if choice == "Conservative":
     Set_Initial_Number_Of_Clinics                       = 1
