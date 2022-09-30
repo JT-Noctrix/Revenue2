@@ -67,8 +67,6 @@ import streamlit as st
 
 
 
-
-
 col1, col2, col3 = st.columns(3)
 
 with col1:
@@ -77,7 +75,9 @@ with col1:
      ('Optimistic', 'Conservative', 'Realistic'), index=2, disabled=True)
 
 with col2:
-    Quarterly = st.checkbox("Plot Quarterly")
+    Periodicity = st.radio(
+     "Periodicity:",
+     ('Annual', 'Quarterly', 'Monthly'), index=2, disabled=True)
 
 if choice == "Conservative":
     Set_Initial_Number_Of_Clinics                       = 1
@@ -358,9 +358,12 @@ Consumables_Percentage = 1 - Device_Percentage
 
 Quarter = np.ceil(Month /3)
 
+Year = np.ceil(Month / 12)
+
 df = pd.DataFrame({
     'Month':Month,
     'Quarter':Quarter,
+    'Year':Year,
     'New_Clinics':New_Clinics,
     'Total_prescribing_clinics':Total_prescribing_clinics,
     'New_patients_by_month':New_patients_by_month,
@@ -381,11 +384,20 @@ qdfMax = df.groupby('Quarter').max()  # for patient count
 
 qdf['Quarter'] = qdf.index
 qdfMax['Quarter'] = qdfMax.index
-        
+   
 
 qdf['Revenue'] = qdf['Monthly_Revenue']
 
-if not Quarterly:
+ydf    = df.groupby('Year').sum()
+ydfMax = df.groupby('Year').max()  # for patient count
+
+ydf['Quarter'] = ydf.index
+ydfMax['Quarter'] = ydfMax.index
+   
+
+ydf['Revenue'] = ydf['Monthly_Revenue']
+
+if Periodicity ==  'Monthly':
     fig = px.bar(
         data_frame = df,
         x = "Month",
@@ -516,7 +528,7 @@ if not Quarterly:
     
 # display Quaterly plots
 
-if Quarterly:
+if Periodicity ==  'Quarterly':
     fig = px.bar(
         data_frame = qdf,
         x = "Quarter",
