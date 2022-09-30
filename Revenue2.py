@@ -77,7 +77,7 @@ with col1:
 with col2:
     Periodicity = st.radio(
      "Periodicity:",
-     ('Annual', 'Quarterly', 'Monthly'), index=2, disabled=True)
+     ('Annual', 'Quarterly', 'Monthly'), index=1, disabled=False)
 
 if choice == "Conservative":
     Set_Initial_Number_Of_Clinics                       = 1
@@ -659,6 +659,139 @@ if Periodicity ==  'Quarterly':
     
     st.plotly_chart(fig, use_container_width=True)
 
+
+# display Quaterly plots
+
+if Periodicity ==  'Yearly':
+    fig = px.bar(
+        data_frame = ydf,
+        x = "Year",
+        y = ["Revenue"], #,"Revenue_Devices"],
+        opacity = 0.5,
+        color_discrete_sequence=['MediumSlateBlue'],  
+        orientation = "v",
+        barmode = 'group',
+        title='Yearly Revenue',
+        labels={'x': 'Year', 'value':'Dollars USD'},
+    )
+    
+    fig.update_layout(legend=dict(
+        yanchor="top",
+        y=0.99,
+        xanchor="left",
+        x=0.01
+    ))
+    
+    st.plotly_chart(fig, use_container_width=True)
+    
+    
+    
+    fig = px.bar(
+        data_frame = ydf,
+        x = "Year",
+        y = ["Revenue_New_Patients","Revenue_Existing_Patients"],
+        opacity = 0.5,
+        color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
+        orientation = "v",
+        barmode = 'group',
+        title='Existing vs New Patient Revenue',
+        labels={'x': 'Year', 'value':'Dollars USD'},
+    )
+    
+    fig.update_layout(legend=dict(
+        yanchor="top",
+        y=0.99,
+        xanchor="left",
+        x=0.01
+    ))
+    
+    st.plotly_chart(fig, use_container_width=True)
+    
+    
+    fig = px.bar(
+        data_frame = ydf,
+        x = "Year",
+        y = ["Revenue_Devices","Revenue_Consumables"],
+        opacity = 0.5,
+        color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
+        orientation = "v",
+        barmode = 'group',
+        title='Devices vs Consumables Revenue',
+        labels={'x': 'Year', 'value':'Dollars USD'},
+    )
+    
+    fig.update_layout(legend=dict(
+        yanchor="top",
+        y=0.99,
+        xanchor="left",
+        x=0.01
+    ))
+    
+    
+    st.plotly_chart(fig, use_container_width=True)
+    
+    fig = px.line(
+        data_frame = ydf,
+        x = "Year",
+        y = ["Device_Percentage","Consumables_Percentage"],
+        color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
+        orientation = "v",
+        title='Devices vs Consumables Revenue',
+        labels={'x': 'Year', 'value':'% of revenue'},
+    )
+    
+    fig.update_layout(legend=dict(
+        yanchor="top",
+        y=0.99,
+        xanchor="left",
+        x=0.01
+    ))
+    
+    
+    st.plotly_chart(fig, use_container_width=True)
+    
+    fig = px.bar(
+        data_frame = ydfMax,
+        x = "Year",
+        y = ["New_Clinics","Total_prescribing_clinics"],
+        opacity = 0.5,
+        color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
+        orientation = "v",
+        barmode = 'group',
+        title='Number of Clinics',
+        labels={'x': 'Year', 'value':'Number of Clinics'},
+    )
+    
+    fig.update_layout(legend=dict(
+        yanchor="top",
+        y=0.99,
+        xanchor="left",
+        x=0.01
+    ))
+    
+    st.plotly_chart(fig, use_container_width=True)
+    
+    fig = px.bar(
+        data_frame = ydfMax,
+        x = "Year",
+        y = ['New_patients_by_month','Total_patients'],
+        opacity = 0.5,
+        color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
+        orientation = "v",
+        barmode = 'group',
+        title='Number of Patients',
+        labels={'x': 'Year', 'value':'Number of Patients'},
+    )
+    
+    fig.update_layout(legend=dict(
+        yanchor="top",
+        y=0.99,
+        xanchor="left",
+        x=0.01
+    ))
+    
+    
+    st.plotly_chart(fig, use_container_width=True)
 #%%
 
 with st.expander("Calculations"):
@@ -668,6 +801,9 @@ with st.expander("Calculations"):
     st.write('Quarterly')
     #qdf2 = qdf.T.style.format("{:.2}")
     qdf.T
+    st.write('Annually')
+    #qdf2 = qdf.T.style.format("{:.2}")
+    ydfdf.T
     
 with st.expander("Amortization Matrix"):
     One_patient_amortization
