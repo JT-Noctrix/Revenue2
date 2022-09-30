@@ -289,13 +289,13 @@ Blended_CDI                 =  (Percent_Patients_On_Medicare * Total_CDI) + (Per
 
 
 
+numMonths = 60
 
 
-
-Month = np.arange(37)
-New_Clinics = np.zeros(37)
-Total_prescribing_clinics = np.zeros(37)
-New_patients_by_month = np.zeros(37)
+Month = np.arange(numMonths)
+New_Clinics = np.zeros(numMonths)
+Total_prescribing_clinics = np.zeros(numMonths)
+New_patients_by_month = np.zeros(numMonths)
 
 
 # Month one inital condition
@@ -308,29 +308,29 @@ New_patients_by_month[1] = Initial_Number_Of_Clinics * Patients_Per_Clinic_Per_M
 Monthly_Growth = (1 + New_Patients_In_Existing_Clinic_Annual_Growth / 12)
 
 # Loop for remaining months
-for i in range(2,37):
+for i in range(2,numMonths):
   pre = i-1   # previous month
   New_Clinics[i]               = np.ceil(Total_prescribing_clinics[pre] * Number_Of_New_Clinics_Monthly_Growth)
   Total_prescribing_clinics[i] = Total_prescribing_clinics[pre] + New_Clinics[i] 
   New_patients_by_month[i]     = np.ceil(Total_prescribing_clinics[pre] * (Monthly_Growth ** Month[pre]) * Patients_Per_Clinic_Per_Month + New_Clinics[i] * Patients_Per_Clinic_Per_Month)
   
 
-One_patient_amortization = np.zeros((37,37))
+One_patient_amortization = np.zeros((numMonths,numMonths))
 One_patient_amortization[1] =  New_patients_by_month
 Attrition_Rate = 1 - Patient_Attrition_Rate_Per_Month
 
-for row in range(2,37):
-  for col in range(row,37):
+for row in range(2,numMonths):
+  for col in range(row,numMonths):
     One_patient_amortization[row][col] = np.ceil(One_patient_amortization[row-1][col-1] * Attrition_Rate)
 
 
 
 Total_patients = One_patient_amortization.sum(axis=0)
 
-TOMA_CMS                   = np.zeros(37)
-TOMA_PP                    = np.zeros(37)
-CCG                        = np.zeros(37)  
-CDI                        = np.zeros(37)
+TOMA_CMS                   = np.zeros(numMonths)
+TOMA_PP                    = np.zeros(numMonths)
+CCG                        = np.zeros(numMonths)  
+CDI                        = np.zeros(numMonths)
 
 # For TOMA, check if within rental period before calculating
 for month in Month:
