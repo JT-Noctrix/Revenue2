@@ -74,7 +74,7 @@ col1, col2, col3 = st.columns(3)
 with col1:
     choice = st.radio(
      "Choose Preset",
-     ('Optimistic', 'Conservative', 'Realistic'), index=2)
+     ('Optimistic', 'Conservative', 'Realistic'), index=2, disabled=True)
 
 with col2:
     Quarterly = st.checkbox("Plot Quarterly")
@@ -605,7 +605,7 @@ if Quarterly:
     st.plotly_chart(fig, use_container_width=True)
     
     fig = px.bar(
-        data_frame = qdf,
+        data_frame = qdfMax,
         x = "Quarter",
         y = ["New_Clinics","Total_prescribing_clinics"],
         opacity = 0.5,
@@ -771,8 +771,8 @@ with col3:
 
             pdf.add_page()
 
-            Y = qdf['New_Clinics']
-            Z = qdf['Total_prescribing_clinics']
+            Y = qdfMax['New_Clinics']
+            Z = qdfMax['Total_prescribing_clinics']
 
             plt.figure(dpi=250)    
             plt.bar(X_axis - 0.2, Y, 0.4, label = 'New Clinics',color='deepskyblue', alpha=0.7)
