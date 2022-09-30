@@ -391,8 +391,8 @@ qdf['Revenue'] = qdf['Monthly_Revenue']
 ydf    = df.groupby('Year').sum()
 ydfMax = df.groupby('Year').max()  # for patient count
 
-ydf['Quarter'] = ydf.index
-ydfMax['Quarter'] = ydfMax.index
+ydf['Year'] = ydf.index
+ydfMax['Year'] = ydfMax.index
    
 
 ydf['Revenue'] = ydf['Monthly_Revenue']
