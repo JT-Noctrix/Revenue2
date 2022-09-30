@@ -289,7 +289,7 @@ Blended_CDI                 =  (Percent_Patients_On_Medicare * Total_CDI) + (Per
 
 
 
-numMonths = 60
+numMonths = 61 # add one to the actual number you want
 
 
 Month = np.arange(numMonths)
