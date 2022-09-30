@@ -230,7 +230,7 @@ with st.sidebar.form(key='my_form'):
     #Total CMS Reimbursement per unit
         CMS_TOMA_CMS                                 =     st.slider("Reimbursement per unit hf-TOMAC when Medicare",
                                                                 min_value = 200,
-                                                                max_value = 1500,
+                                                                max_value = 5000,
                                                                 value = Set_CMS_TOMA_CMS,
                                                                 format="$%i")
         
