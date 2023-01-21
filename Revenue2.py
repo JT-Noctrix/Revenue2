@@ -270,13 +270,7 @@ with st.sidebar.form(key='my_form'):
                                                                 min_value = 10,
                                                                 max_value = 40,
                                                                 value = Set_New_Hours_Per_Week)
-        
-        CMS_CDI                                      =     st.slider("Reimbursement per unit CDI",
-                                                                min_value = 15,
-                                                                max_value = 150,
-                                                                value = Set_CMS_CDI,
-                                                                format="$%i")
-        
+              
         Max_Hours_Per_Week                          =     st.slider("Number of Maximum Hours per Week",
                                                                 min_value = 20,
                                                                 max_value = 55,
