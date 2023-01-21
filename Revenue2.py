@@ -261,7 +261,7 @@ with st.sidebar.form(key='my_form'):
 
     with st.expander("👩‍⚕️ Clinical Support Staffing"):    
     #Total CMS Reimbursement per unit
-        Existing_Hours_Per_Week                      =     st.slider("Hours of support per week for an existing site",
+        Existing_Hours_Per_Week                      =     st.slider("Hours of support per week per exisiting site",
                                                                 min_value = 1,
                                                                 max_value = 12,
                                                                 value = Set_Existing_Hours_Per_Week)
@@ -271,7 +271,7 @@ with st.sidebar.form(key='my_form'):
                                                                 max_value = 40,
                                                                 value = Set_New_Hours_Per_Week)
               
-        Max_Hours_Per_Week                          =     st.slider("Number of Maximum Hours per Week",
+        Max_Hours_Per_Week                          =     st.slider("Number of Maximum Hours per Week Per Specialist",
                                                                 min_value = 20,
                                                                 max_value = 55,
                                                                 value = Set_Max_Hours_Per_Week )
@@ -320,6 +320,8 @@ Month = np.arange(numMonths)
 New_Clinics = np.zeros(numMonths)
 Total_prescribing_clinics = np.zeros(numMonths)
 New_patients_by_month = np.zeros(numMonths)
+Hours_required = np.zeros(numMonths)
+Staff_required = np.zeros(numMonths)
 
 
 # Month one inital condition
@@ -337,6 +339,8 @@ for i in range(2,numMonths):
   New_Clinics[i]               = np.ceil(Total_prescribing_clinics[pre] * Number_Of_New_Clinics_Monthly_Growth)
   Total_prescribing_clinics[i] = Total_prescribing_clinics[pre] + New_Clinics[i] 
   New_patients_by_month[i]     = np.ceil(Total_prescribing_clinics[pre] * (Monthly_Growth ** Month[pre]) * Patients_Per_Clinic_Per_Month + New_Clinics[i] * Patients_Per_Clinic_Per_Month)
+  Hours_required[i]            = (New_Clinics[i] * New_Hours_Per_Week) + (Total_prescribing_clinics[i] * Existing_Hours_Per_Week)
+  
   
 
 One_patient_amortization = np.zeros((numMonths,numMonths))
