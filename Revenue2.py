@@ -65,7 +65,9 @@ import streamlit as st
 
 
 
+# main page
 
+# setting up the 3 columns for the Optimism, Periodicity and Printer sections
 
 col1, col2, col3 = st.columns(3)
 
@@ -106,7 +108,7 @@ if choice == "Realistic":
     Set_Rental_Period_Refill_TOMA_CMS                   = 13
     Set_Rental_Period_Refill_TOMA_PP                    = 6
     Set_Rental_Period_Refill_CCG                        = 3
-    Set_Rental_Period_Refill_CDI                        = 3
+    Set_Rental_Period_Refill_CDI                        = 1   #was set to 3
     Set_CMS_TOMA_CMS                                    = 450
     Set_CMS_CCG                                         = 250
     Set_CMS_CDI                                         = 42
@@ -129,9 +131,13 @@ if choice == "Optimistic":
     Set_CMS_CDI                                         = 90
     Set_Private_Payer_Premium_Over_Medicare             = 50
     
+# Default Support model values, can be implemented into optimising options 
 
+Set_Existing_Hours_Per_Week                             = 8
+Set_New_Hours_Per_Week                                  = 30
+Set_Max_Hours_Per_Week                                  = 36
     
-
+# the sliding out section used to set parameters to the model
     
 with st.sidebar.form(key='my_form'):
     # logo in sidebar
@@ -218,7 +224,7 @@ with st.sidebar.form(key='my_form'):
         Rental_Period_Refill_CCG                      =     st.slider("Refill Period for CCG [months]",
                                                                 min_value = 0,
                                                                 max_value = 12,
-                                                                value = Set_Rental_Period_Refill_CCG, disabled=True)       
+                                                                value = Set_Rental_Period_Refill_CCG, disabled=False)       
         
         Rental_Period_Refill_CDI                      =     st.slider("Refill Period for CDI [months]",
                                                                 min_value = 0,
@@ -246,12 +252,36 @@ with st.sidebar.form(key='my_form'):
                                                                 value = Set_CMS_CDI,
                                                                 format="$%i")
         
-        Private_Payer_Premium_Over_Medicare             =     st.slider("Private Payer Premium Over Medicare",
+        Private_Payer_Premium_Over_Medicare           =     st.slider("Private Payer Premium Over Medicare",
                                                                 min_value = 0,
                                                                 max_value = 100,
                                                                 value = Set_Private_Payer_Premium_Over_Medicare,
                                                                 format="%i%%")*.01
-    
+
+
+    with st.expander("👩‍⚕️ Clinical Support Staffing"):    
+    #Total CMS Reimbursement per unit
+        Existing_Hours_Per_Week                      =     st.slider("Hours of support per week for an existing site",
+                                                                min_value = 1,
+                                                                max_value = 12,
+                                                                value = Set_Existing_Hours_Per_Week)
+        
+        New_Hours_Per_Week                           =     st.slider("Hours of support per week for a new site",
+                                                                min_value = 10,
+                                                                max_value = 40,
+                                                                value = Set_New_Hours_Per_Week)
+        
+        CMS_CDI                                      =     st.slider("Reimbursement per unit CDI",
+                                                                min_value = 15,
+                                                                max_value = 150,
+                                                                value = Set_CMS_CDI,
+                                                                format="$%i")
+        
+        Max_Hours_Per_Week                          =     st.slider("Number of Maximum Hours per Week",
+                                                                min_value = 20,
+                                                                max_value = 55,
+                                                                value = Set_Max_Hours_Per_Week )
+        
     
     submit_button = st.form_submit_button(label='🖩 Calculate', on_click=form_callback)
 
