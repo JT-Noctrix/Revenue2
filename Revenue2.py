@@ -340,6 +340,7 @@ for i in range(2,numMonths):
   Total_prescribing_clinics[i] = Total_prescribing_clinics[pre] + New_Clinics[i] 
   New_patients_by_month[i]     = np.ceil(Total_prescribing_clinics[pre] * (Monthly_Growth ** Month[pre]) * Patients_Per_Clinic_Per_Month + New_Clinics[i] * Patients_Per_Clinic_Per_Month)
   Hours_required[i]            = (New_Clinics[i] * New_Hours_Per_Week) + (Total_prescribing_clinics[i] * Existing_Hours_Per_Week)
+  Staff_required[i]            = np.ceil(Hours_required[i] / Max_Hours_Per_Week)
   
   
 
@@ -377,6 +378,7 @@ Total = (TOMA_CMS * Percent_Patients_On_Medicare) + (TOMA_PP * Percent_Private) 
 Devices = (TOMA_CMS * Percent_Patients_On_Medicare) + (TOMA_PP * Percent_Private)
 
 Monthly_Revenue = np.dot(Total[1:], np.delete(One_patient_amortization, 0, 0))
+Monthly_Revenue[0] = 1
 Revenue_New_Patients = Total[1] * One_patient_amortization[1]
 Revenue_Existing_Patients = Monthly_Revenue - Revenue_New_Patients
 Revenue_Devices = np.dot(Devices, One_patient_amortization)
@@ -402,7 +404,8 @@ df = pd.DataFrame({
     'Revenue_Devices':Revenue_Devices,
     'Revenue_Consumables':Revenue_Consumables,
     'Device_Percentage':Device_Percentage,
-    'Consumables_Percentage':Consumables_Percentage})
+    'Consumables_Percentage':Consumables_Percentage,
+    'Staff_required':Staff_required})
 
 st.write("")
 st.write("")
@@ -542,6 +545,27 @@ if Periodicity ==  'Monthly':
         orientation = "v",
         barmode = 'group',
         title='Number of Patients',
+        labels={'x': 'Month', 'value':'Number of Patients'},
+    )
+
+    fig.update_layout(legend=dict(
+        yanchor="top",
+        y=0.99,
+        xanchor="left",
+        x=0.01
+    ))
+
+    st.plotly_chart(fig, use_container_width=True)
+
+    fig = px.bar(
+        data_frame = df,
+        x = "Month",
+        y = ['Staff_required'],
+        opacity = 0.5,
+        color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
+        orientation = "v",
+        barmode = 'group',
+        title='Number of Staff',
         labels={'x': 'Month', 'value':'Number of Patients'},
     )
 
