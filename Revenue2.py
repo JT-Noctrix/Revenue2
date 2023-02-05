@@ -566,7 +566,7 @@ if Periodicity ==  'Monthly':
         orientation = "v",
         barmode = 'group',
         title='Number of Staff',
-        labels={'x': 'Month', 'value':'Number of Patients'},
+        labels={'x': 'Month', 'value':'Number of Support Staff'},
     )
 
     fig.update_layout(legend=dict(
@@ -710,9 +710,31 @@ if Periodicity ==  'Quarterly':
     
     
     st.plotly_chart(fig, use_container_width=True)
+    
+    fig = px.bar(
+        data_frame = qdfMax,
+        x = "Quarter",
+        y = ['Staff_required'],
+        opacity = 0.5,
+        color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
+        orientation = "v",
+        barmode = 'group',
+        title='Number of Staff',
+        labels={'x': 'Quarter', 'value':'Number of Support Staff'},
+    )
+
+    fig.update_layout(legend=dict(
+        yanchor="top",
+        y=0.99,
+        xanchor="left",
+        x=0.01
+    ))
+
+    st.plotly_chart(fig, use_container_width=True)
+    
 
 
-# display Quaterly plots
+# display Yearly plots
 
 if Periodicity ==  'Yearly':
     fig = px.bar(
@@ -844,6 +866,28 @@ if Periodicity ==  'Yearly':
     
     
     st.plotly_chart(fig, use_container_width=True)
+
+    fig = px.bar(
+        data_frame = ydfMax,
+        x = "Year",
+        y = ['Staff_required'],
+        opacity = 0.5,
+        color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
+        orientation = "v",
+        barmode = 'group',
+        title='Number of Staff',
+        labels={'x': 'Year', 'value':'Number of Support Staff'},
+    )
+
+    fig.update_layout(legend=dict(
+        yanchor="top",
+        y=0.99,
+        xanchor="left",
+        x=0.01
+    ))
+
+    st.plotly_chart(fig, use_container_width=True)
+    
 #%%
 
 with st.expander("Calculations"):
