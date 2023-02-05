@@ -61,10 +61,6 @@ import streamlit as st
 
 
 
-#testing
-
-
-
 # main page
 
 # setting up the 3 columns for the Optimism, Periodicity and Printer sections
@@ -368,6 +364,8 @@ for month in Month:
 
   if month <= Rental_Period_Refill_TOMA_PP:
     TOMA_PP[month] = (Number_Per_Kit_TOMA_PP * CMS_TOMA_PP)  / Rental_Period_Refill_TOMA_PP 
+    
+# if after rental period, leave as 0
 
 # cast to all values the same result for CCG and CDI
 CCG[:] = Blended_CCG / Rental_Period_Refill_CCG
@@ -649,7 +647,7 @@ if Periodicity ==  'Quarterly':
     st.plotly_chart(fig, use_container_width=True)
     
     fig = px.line(
-        data_frame = qdf,
+        data_frame = qdfMax,
         x = "Quarter",
         y = ["Device_Percentage","Consumables_Percentage"],
         color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
@@ -805,7 +803,7 @@ if Periodicity ==  'Yearly':
     st.plotly_chart(fig, use_container_width=True)
     
     fig = px.line(
-        data_frame = ydf,
+        data_frame = ydfMax,
         x = "Year",
         y = ["Device_Percentage","Consumables_Percentage"],
         color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
