@@ -76,6 +76,11 @@ with col2:
     Periodicity = st.radio(
      "Periodicity:",
      ('Yearly', 'Quarterly', 'Monthly'), index=1, disabled=False)
+    
+    Month_size                          =     st.slider("Number of Months to forecast",
+                                                                min_value = 12,
+                                                                max_value = 60,
+                                                                value = 48 )
 
 if choice == "Conservative":
     Set_Initial_Number_Of_Clinics                       = 1
@@ -309,7 +314,7 @@ Blended_CDI                 =  (Percent_Patients_On_Medicare * Total_CDI) + (Per
 
 
 
-numMonths = 61 # add one to the actual number you want
+numMonths = Month_size + 1 # add one to the actual number you want
 
 
 Month = np.arange(numMonths)
