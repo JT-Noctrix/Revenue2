@@ -479,6 +479,8 @@ if Periodicity ==  'Monthly':
         x=0.01
     ))
 
+    fig.update_layout(hovermode='x unified')
+    
     st.plotly_chart(fig, use_container_width=True)
 
 
