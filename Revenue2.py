@@ -786,14 +786,14 @@ if Periodicity ==  'Quarterly':
 
     fig = px.bar(
         data_frame = qdf,
-        x = "Month",
+        x = "Quarter",
         y = ['TOMAC_Inventory','CCG_Inventory','CDI_Inventory'],
         opacity = 0.5,
         color_discrete_sequence=['deepskyblue','MediumSlateBlue','DarkTurquoise'],
         orientation = "v",
         barmode = 'group',
         title='Number of Inventory',
-        labels={'x': 'Month', 'value':'Number of Inventory'}
+        labels={'x': 'Quarter', 'value':'Number of Inventory'}
     )    
 
     st.plotly_chart(fig, use_container_width=True)
@@ -954,7 +954,7 @@ if Periodicity ==  'Yearly':
     
     fig = px.bar(
         data_frame = ydf,
-        x = "Month",
+        x = "Year",
         y = ['TOMAC_Inventory','CCG_Inventory','CDI_Inventory'],
         opacity = 0.5,
         color_discrete_sequence=['deepskyblue','MediumSlateBlue','DarkTurquoise'],
