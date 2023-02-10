@@ -409,7 +409,7 @@ for month in Month:
     CDI_Refill_Month = np.clip(month-Rental_Period_Refill_CDI, a_min=0, a_max=None)    
     
     iCDI[month]  = (iTOMA[month] + # each new TOMA will need a CCG kit
-                   (Total_patients[CCG_Refill_Month] * Number_Per_Kit_CCG)) # The patients we had 3 months ago are due for a refill
+                   (Total_patients[CDI_Refill_Month] * Number_Per_Kit_CDI)) # The patients we had 3 months ago are due for a refill
                    
 
 
