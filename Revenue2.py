@@ -336,7 +336,7 @@ Monthly_Growth = (1 + New_Patients_In_Existing_Clinic_Annual_Growth / 12)
 # Loop for remaining months
 for i in range(2,numMonths):
   pre = i-1   # previous month
-  New_Clinics[i]               = np.ceil(Total_prescribing_clinics[pre] * Number_Of_New_Clinics_Monthly_Growth)
+  New_Clinics[i]               = (Total_prescribing_clinics[pre] * Number_Of_New_Clinics_Monthly_Growth) #np.ceil(Total_prescribing_clinics[pre] * Number_Of_New_Clinics_Monthly_Growth)
   Total_prescribing_clinics[i] = Total_prescribing_clinics[pre] + New_Clinics[i] 
   New_patients_by_month[i]     = np.ceil(Total_prescribing_clinics[pre] * (Monthly_Growth ** Month[pre]) * Patients_Per_Clinic_Per_Month + New_Clinics[i] * Patients_Per_Clinic_Per_Month)
   Hours_required[i]            = (New_Clinics[i] * New_Hours_Per_Week) + (Total_prescribing_clinics[i] * Existing_Hours_Per_Week)
