@@ -395,21 +395,22 @@ iCCG                   = np.zeros(numMonths)
 iCDI                   = np.zeros(numMonths)
 
 for month in Month:
-    iTOMA[month] = New_patients_by_month[month] * Number_Per_Kit_TOMA_CMS # each new patient needs a kit (2 devices)
+    iTOMA[month] = ((New_patients_by_month[month] * Number_Per_Kit_TOMA_CMS) +  # each new patient needs a kit
+                     New_Clinics[month])                                        # each new clinic needs a kit (calibration) (not modeled in reimbursement)
     
-    # to determine the number of CCG, inspect the number of patients 3 months ago (3 months = refill period)
+    # to determine the number of CCG, inspect the number of patients x months ago (x months = refill period)
     
     # need to clip to zero to prevent negative months
     CCG_Refill_Month = np.clip(month-Rental_Period_Refill_CCG, a_min=0, a_max=None)    
     
-    iCCG[month]  = (iTOMA[month] + # each new TOMA will need a CCG kit
-                   (Total_patients[CCG_Refill_Month] * Number_Per_Kit_CCG)) # The patients we had 3 months ago are due for a refill
+    iCCG[month]  = (iTOMA[month] +                                              # each new TOMA will need a CCG kit
+                   (Total_patients[CCG_Refill_Month] * Number_Per_Kit_CCG))     # The patients we had x months ago are due for a refill
     
     # need to clip to zero to prevent negative months
     CDI_Refill_Month = np.clip(month-Rental_Period_Refill_CDI, a_min=0, a_max=None)    
     
-    iCDI[month]  = (iTOMA[month] + # each new TOMA will need a CCG kit
-                   (Total_patients[CDI_Refill_Month] * Number_Per_Kit_CDI)) # The patients we had 3 months ago are due for a refill
+    iCDI[month]  = (iTOMA[month] +                                              # each new TOMA will need a CCG kit
+                   (Total_patients[CDI_Refill_Month] * Number_Per_Kit_CDI))     # The patients we had y months ago are due for a refill
                    
 
 
