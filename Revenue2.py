@@ -613,7 +613,7 @@ if Periodicity ==  'Monthly':
         x = "Month",
         y = ['TOMAC_Inventory','CCG_Inventory','CDI_Inventory'],
         opacity = 0.5,
-        color_discrete_sequence=['deepskyblue','MediumSlateBlue','MediumAquaMarine'],
+        color_discrete_sequence=['deepskyblue','MediumSlateBlue','DarkTurquoise'],
         orientation = "v",
         barmode = 'group',
         title='Number of Inventory',
@@ -628,11 +628,7 @@ if Periodicity ==  'Monthly':
     ))
 
     st.plotly_chart(fig, use_container_width=True)
-'''
-    'TOMAC_Inventory':iTOMA,
-    'CCG_Inventory':iCCG,
-    'CDI_Inventory':iCDI})
-'''
+
 # display Quaterly plots
 
 if Periodicity ==  'Quarterly':
