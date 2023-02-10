@@ -198,14 +198,14 @@ with st.sidebar.form(key='my_form'):
 
     
     #Number per kit
-    Number_Per_Kit_TOMA_CMS                        =     2
+    Number_Per_Kit_TOMA_CMS                        =     1
     
     
-    Number_Per_Kit_TOMA_PP                         =     2
+    Number_Per_Kit_TOMA_PP                         =     1
     
-    Number_Per_Kit_CCG                             =     2
+    Number_Per_Kit_CCG                             =     1
     
-    Number_Per_Kit_CDI                             =     4
+    Number_Per_Kit_CDI                             =     1
     
     
     
@@ -242,13 +242,13 @@ with st.sidebar.form(key='my_form'):
         
         CMS_CCG                                      =     st.slider("$ per Compressive Conduction Garment",
                                                                 min_value = 0,
-                                                                max_value = 500,
+                                                                max_value = 1500,
                                                                 value = Set_CMS_CCG,
                                                                 format="$%i")
         
         CMS_CDI                                       =     st.slider("$ per Charge Dispersing Interface",
                                                                 min_value = 15,
-                                                                max_value = 150,
+                                                                max_value = 550,
                                                                 value = Set_CMS_CDI,
                                                                 format="$%i")
         
@@ -592,7 +592,7 @@ if Periodicity ==  'Monthly':
         x = "Month",
         y = ['Staff_required'],
         opacity = 0.5,
-        color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
+        color_discrete_sequence=['MediumSlateBlue'],
         orientation = "v",
         barmode = 'group',
         title='Number of Staff',
@@ -767,7 +767,7 @@ if Periodicity ==  'Quarterly':
         x = "Quarter",
         y = ['Staff_required'],
         opacity = 0.5,
-        color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
+        color_discrete_sequence=['MediumSlateBlue'],
         orientation = "v",
         barmode = 'group',
         title='Number of Staff',
@@ -783,8 +783,19 @@ if Periodicity ==  'Quarterly':
 
     st.plotly_chart(fig, use_container_width=True)
 
-    
+    fig = px.bar(
+        data_frame = qdf,
+        x = "Month",
+        y = ['TOMAC_Inventory','CCG_Inventory','CDI_Inventory'],
+        opacity = 0.5,
+        color_discrete_sequence=['deepskyblue','MediumSlateBlue','DarkTurquoise'],
+        orientation = "v",
+        barmode = 'group',
+        title='Number of Inventory',
+        labels={'x': 'Month', 'value':'Number of Inventory'}
+    )    
 
+    st.plotly_chart(fig, use_container_width=True)
 
 # display Yearly plots
 
@@ -924,7 +935,7 @@ if Periodicity ==  'Yearly':
         x = "Year",
         y = ['Staff_required'],
         opacity = 0.5,
-        color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
+        color_discrete_sequence=['MediumSlateBlue'],
         orientation = "v",
         barmode = 'group',
         title='Number of Staff',
@@ -937,6 +948,20 @@ if Periodicity ==  'Yearly':
         xanchor="left",
         x=0.01
     ))
+
+    st.plotly_chart(fig, use_container_width=True)
+    
+    fig = px.bar(
+        data_frame = ydf,
+        x = "Month",
+        y = ['TOMAC_Inventory','CCG_Inventory','CDI_Inventory'],
+        opacity = 0.5,
+        color_discrete_sequence=['deepskyblue','MediumSlateBlue','DarkTurquoise'],
+        orientation = "v",
+        barmode = 'group',
+        title='Number of Inventory',
+        labels={'x': 'Month', 'value':'Number of Inventory'}
+    )    
 
     st.plotly_chart(fig, use_container_width=True)
     
