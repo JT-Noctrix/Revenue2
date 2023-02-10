@@ -395,7 +395,7 @@ iCCG                   = np.zeros(numMonths)
 iCDI                   = np.zeros(numMonths)
 
 for month in Month:
-    iTOMA[month] = New_patients_by_month[i] * Number_Per_Kit_TOMA_CMS # each new patient needs a kit (2 devices)
+    iTOMA[month] = New_patients_by_month[month] * Number_Per_Kit_TOMA_CMS # each new patient needs a kit (2 devices)
     
     # to determine the number of CCG, inspect the number of patients 3 months ago (3 months = refill period)
     
@@ -432,7 +432,10 @@ df = pd.DataFrame({
     'Revenue_Consumables':Revenue_Consumables,
     'Device_Percentage':Device_Percentage,
     'Consumables_Percentage':Consumables_Percentage,
-    'Staff_required':Staff_required})
+    'Staff_required':Staff_required,
+    'TOMAC_Inventory':iTOMA,
+    'CCG_Inventory':iCCG,
+    'CDI_Inventory':iCDI})
 
 st.write("")
 st.write("")
@@ -605,6 +608,31 @@ if Periodicity ==  'Monthly':
 
     st.plotly_chart(fig, use_container_width=True)
     
+    fig = px.bar(
+        data_frame = df,
+        x = "Month",
+        y = ['TOMAC_Inventory','CCG_Inventory','CCG_Inventory'],
+        opacity = 0.5,
+        color_discrete_sequence=['deepskyblue','MediumSlateBlue','MediumAquaMarine'],
+        orientation = "v",
+        barmode = 'group',
+        title='Number of Staff',
+        labels={'x': 'Month', 'value':'Number of Inventory'}
+    )
+
+    fig.update_layout(legend=dict(
+        yanchor="top",
+        y=0.99,
+        xanchor="left",
+        x=0.01
+    ))
+
+    st.plotly_chart(fig, use_container_width=True)
+'''
+    'TOMAC_Inventory':iTOMA,
+    'CCG_Inventory':iCCG,
+    'CDI_Inventory':iCDI})
+'''
 # display Quaterly plots
 
 if Periodicity ==  'Quarterly':
@@ -758,6 +786,7 @@ if Periodicity ==  'Quarterly':
     ))
 
     st.plotly_chart(fig, use_container_width=True)
+
     
 
 
