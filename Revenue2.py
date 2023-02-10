@@ -48,9 +48,9 @@ Set_Rental_Period_Refill_TOMA_CMS                   = 13
 Set_Rental_Period_Refill_TOMA_PP                    = 6
 Set_Rental_Period_Refill_CCG                        = 3
 Set_Rental_Period_Refill_CDI                        = 1
-Set_CMS_TOMA_CMS                                    = 450
-Set_CMS_CCG                                         = 250
-Set_CMS_CDI                                         = 14
+Set_CMS_TOMA_CMS                                    = 450* 2
+Set_CMS_CCG                                         = 250* 2
+Set_CMS_CDI                                         = 14 * 2
 Set_Private_Payer_Premium_Over_Medicare             = 40
 
 
@@ -93,10 +93,10 @@ if choice == "Conservative":
     Set_Rental_Period_Refill_TOMA_PP                    = 9
     Set_Rental_Period_Refill_CCG                        = 3
     Set_Rental_Period_Refill_CDI                        = 3
-    Set_CMS_TOMA_CMS                                    = 300
-    Set_CMS_CCG                                         = 150
-    Set_CMS_CDI                                         = 21
-    Set_Private_Payer_Premium_Over_Medicare             = 15
+    Set_CMS_TOMA_CMS                                    = 300 * 2
+    Set_CMS_CCG                                         = 150 * 2
+    Set_CMS_CDI                                         = 21 * 2
+    Set_Private_Payer_Premium_Over_Medicare             = 15 
 
 
 if choice == "Realistic":
@@ -110,9 +110,9 @@ if choice == "Realistic":
     Set_Rental_Period_Refill_TOMA_PP                    = 6
     Set_Rental_Period_Refill_CCG                        = 3
     Set_Rental_Period_Refill_CDI                        = 1   #was set to 3
-    Set_CMS_TOMA_CMS                                    = 450
-    Set_CMS_CCG                                         = 250
-    Set_CMS_CDI                                         = 42
+    Set_CMS_TOMA_CMS                                    = 450* 2
+    Set_CMS_CCG                                         = 250* 2
+    Set_CMS_CDI                                         = 42* 2
     Set_Private_Payer_Premium_Over_Medicare             = 40
     
     
@@ -127,9 +127,9 @@ if choice == "Optimistic":
     Set_Rental_Period_Refill_TOMA_PP                    = 4
     Set_Rental_Period_Refill_CCG                        = 3
     Set_Rental_Period_Refill_CDI                        = 3
-    Set_CMS_TOMA_CMS                                    = 750
-    Set_CMS_CCG                                         = 375
-    Set_CMS_CDI                                         = 90
+    Set_CMS_TOMA_CMS                                    = 750* 2
+    Set_CMS_CCG                                         = 375* 2
+    Set_CMS_CDI                                         = 90* 2
     Set_Private_Payer_Premium_Over_Medicare             = 50
     
 # Default Support model values, can be implemented into optimising options 
@@ -242,13 +242,13 @@ with st.sidebar.form(key='my_form'):
         
         CMS_CCG                                      =     st.slider("$ per Compressive Conduction Garment",
                                                                 min_value = 0,
-                                                                max_value = 1500,
+                                                                max_value = 3000,
                                                                 value = Set_CMS_CCG,
                                                                 format="$%i")
         
         CMS_CDI                                       =     st.slider("$ per Charge Dispersing Interface",
                                                                 min_value = 15,
-                                                                max_value = 550,
+                                                                max_value = 1100,
                                                                 value = Set_CMS_CDI,
                                                                 format="$%i")
         
