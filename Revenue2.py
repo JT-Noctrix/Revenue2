@@ -795,6 +795,13 @@ if Periodicity ==  'Quarterly':
         title='Number of Inventory',
         labels={'x': 'Quarter', 'value':'Number of Inventory'}
     )    
+    
+    fig.update_layout(legend=dict(
+        yanchor="top",
+        y=0.99,
+        xanchor="left",
+        x=0.01
+    ))
 
     st.plotly_chart(fig, use_container_width=True)
 
@@ -963,6 +970,13 @@ if Periodicity ==  'Yearly':
         title='Number of Inventory',
         labels={'x': 'Month', 'value':'Number of Inventory'}
     )    
+    
+    fig.update_layout(legend=dict(
+        yanchor="top",
+        y=0.99,
+        xanchor="left",
+        x=0.01
+    ))
 
     st.plotly_chart(fig, use_container_width=True)
     
