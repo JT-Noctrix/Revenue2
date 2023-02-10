@@ -211,23 +211,22 @@ with st.sidebar.form(key='my_form'):
     
     # Rental period / Refill frequency (months)
     with st.expander("📅 Rental / Refill Period"):
-        Rental_Period_Refill_TOMA_CMS                 =     st.slider("Rental Period for TOMA when Medicare [months]",
+        Rental_Period_Refill_TOMA_CMS                 =     st.slider("Rental Period for TOnic Motor ACtivator when Medicare [months]",
                                                                 min_value = 0,
                                                                 max_value = 24,
                                                                 value = Set_Rental_Period_Refill_TOMA_CMS, disabled=True)
-                                                          
-        
-        Rental_Period_Refill_TOMA_PP                  =     st.slider("Rental Period for TOMA when Private [months]",
+                                                      
+        Rental_Period_Refill_TOMA_PP                  =     st.slider("Rental Period for TOnic Motor ACtivator when Private [months]",
                                                                 min_value = 0,
                                                                 max_value = 13,
                                                                 value = Set_Rental_Period_Refill_TOMA_PP)
         
-        Rental_Period_Refill_CCG                      =     st.slider("Refill Period for CCG [months]",
+        Rental_Period_Refill_CCG                      =     st.slider("Refill Period for Compressive Conduction Garment [months]",
                                                                 min_value = 0,
                                                                 max_value = 12,
                                                                 value = Set_Rental_Period_Refill_CCG, disabled=False)       
         
-        Rental_Period_Refill_CDI                      =     st.slider("Refill Period for CDI [months]",
+        Rental_Period_Refill_CDI                      =     st.slider("Refill Period for Charge Dispersing Interface [months]",
                                                                 min_value = 0,
                                                                 max_value = 12,
                                                                 value = Set_Rental_Period_Refill_CDI, disabled=True) 
@@ -235,19 +234,19 @@ with st.sidebar.form(key='my_form'):
         
     with st.expander("💵 Reimbursement per unit"):    
     #Total CMS Reimbursement per unit
-        CMS_TOMA_CMS                                 =     st.slider("Reimbursement per unit hf-TOMAC when Medicare",
+        CMS_TOMA_CMS                                 =     st.slider("$ per unit hf-TOnic Motor ACtivator kit when Medicare",
                                                                 min_value = 200,
-                                                                max_value = 5000,
+                                                                max_value = 12000,
                                                                 value = Set_CMS_TOMA_CMS,
                                                                 format="$%i")
         
-        CMS_CCG                                      =     st.slider("Reimbursement per unit CCG",
+        CMS_CCG                                      =     st.slider("$ per Compressive Conduction Garment",
                                                                 min_value = 0,
                                                                 max_value = 500,
                                                                 value = Set_CMS_CCG,
                                                                 format="$%i")
         
-        CMS_CDI                                       =     st.slider("Reimbursement per unit CDI",
+        CMS_CDI                                       =     st.slider("$ per Charge Dispersing Interface",
                                                                 min_value = 15,
                                                                 max_value = 150,
                                                                 value = Set_CMS_CDI,
@@ -388,6 +387,31 @@ Revenue_Devices = np.dot(Devices, One_patient_amortization)
 Revenue_Consumables = Monthly_Revenue - Revenue_Devices
 Device_Percentage = Revenue_Devices / Monthly_Revenue
 Consumables_Percentage = 1 - Device_Percentage
+
+# i indicates inventory, variables above are revenue
+
+iTOMA                  = np.zeros(numMonths) # each new patient requires TOMA
+iCCG                   = np.zeros(numMonths)
+iCDI                   = np.zeros(numMonths)
+
+for month in Month:
+    iTOMA[month] = New_patients_by_month[i] * Number_Per_Kit_TOMA_CMS # each new patient needs a kit (2 devices)
+    
+    # to determine the number of CCG, inspect the number of patients 3 months ago (3 months = refill period)
+    
+    # need to clip to zero to prevent negative months
+    CCG_Refill_Month = np.clip(month-Rental_Period_Refill_CCG, a_min=0, a_max=None)    
+    
+    iCCG[month]  = (iTOMA[month] + # each new TOMA will need a CCG kit
+                   (Total_patients[CCG_Refill_Month] * Number_Per_Kit_CCG)) # The patients we had 3 months ago are due for a refill
+    
+    # need to clip to zero to prevent negative months
+    CDI_Refill_Month = np.clip(month-Rental_Period_Refill_CDI, a_min=0, a_max=None)    
+    
+    iCDI[month]  = (iTOMA[month] + # each new TOMA will need a CCG kit
+                   (Total_patients[CCG_Refill_Month] * Number_Per_Kit_CCG)) # The patients we had 3 months ago are due for a refill
+                   
+
 
 Quarter = np.ceil(Month /3)
 
