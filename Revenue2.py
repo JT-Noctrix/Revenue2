@@ -611,12 +611,12 @@ if Periodicity ==  'Monthly':
     fig = px.bar(
         data_frame = df,
         x = "Month",
-        y = ['TOMAC_Inventory','CCG_Inventory','CCG_Inventory'],
+        y = ['TOMAC_Inventory','CCG_Inventory','CDI_Inventory'],
         opacity = 0.5,
         color_discrete_sequence=['deepskyblue','MediumSlateBlue','MediumAquaMarine'],
         orientation = "v",
         barmode = 'group',
-        title='Number of Staff',
+        title='Number of Inventory',
         labels={'x': 'Month', 'value':'Number of Inventory'}
     )
 
