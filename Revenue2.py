@@ -505,6 +505,8 @@ if Periodicity ==  'Monthly':
         x=0.01
     ))
 
+    fig.update_layout(hovermode='x unified')
+
     st.plotly_chart(fig, use_container_width=True)
 
 
@@ -526,6 +528,8 @@ if Periodicity ==  'Monthly':
         xanchor="left",
         x=0.01
     ))
+    
+    fig.update_layout(hovermode='x unified')
 
     st.plotly_chart(fig, use_container_width=True)
 
@@ -547,6 +551,8 @@ if Periodicity ==  'Monthly':
     ))
 
     st.plotly_chart(fig, use_container_width=True)
+    
+    fig.update_layout(hovermode='x unified')
 
     fig = px.bar(
         data_frame = df,
@@ -568,6 +574,8 @@ if Periodicity ==  'Monthly':
     ))
 
     st.plotly_chart(fig, use_container_width=True)
+    
+    fig.update_layout(hovermode='x unified')
 
     fig = px.bar(
         data_frame = df,
@@ -589,6 +597,8 @@ if Periodicity ==  'Monthly':
     ))
 
     st.plotly_chart(fig, use_container_width=True)
+    
+    fig.update_layout(hovermode='x unified')
 
     fig = px.bar(
         data_frame = df,
@@ -611,6 +621,8 @@ if Periodicity ==  'Monthly':
 
     st.plotly_chart(fig, use_container_width=True)
     
+    fig.update_layout(hovermode='x unified')
+    
     fig = px.bar(
         data_frame = df,
         x = "Month",
@@ -631,6 +643,8 @@ if Periodicity ==  'Monthly':
     ))
 
     st.plotly_chart(fig, use_container_width=True)
+
+    fig.update_layout(hovermode='x unified')
 
 # display Quaterly plots
 
@@ -656,6 +670,7 @@ if Periodicity ==  'Quarterly':
     
     st.plotly_chart(fig, use_container_width=True)
     
+    fig.update_layout(hovermode='x unified')    
     
     
     fig = px.bar(
@@ -678,6 +693,8 @@ if Periodicity ==  'Quarterly':
     ))
     
     st.plotly_chart(fig, use_container_width=True)
+    
+    fig.update_layout(hovermode='x unified')
     
     
     fig = px.bar(
@@ -702,6 +719,8 @@ if Periodicity ==  'Quarterly':
     
     st.plotly_chart(fig, use_container_width=True)
     
+    fig.update_layout(hovermode='x unified')
+    
     fig = px.line(
         data_frame = qdfMax,
         x = "Quarter",
@@ -721,6 +740,8 @@ if Periodicity ==  'Quarterly':
     
     
     st.plotly_chart(fig, use_container_width=True)
+    
+    fig.update_layout(hovermode='x unified')
     
     fig = px.bar(
         data_frame = qdfMax,
@@ -742,6 +763,8 @@ if Periodicity ==  'Quarterly':
     ))
     
     st.plotly_chart(fig, use_container_width=True)
+    
+    fig.update_layout(hovermode='x unified')
     
     fig = px.bar(
         data_frame = qdfMax,
@@ -765,6 +788,8 @@ if Periodicity ==  'Quarterly':
     
     st.plotly_chart(fig, use_container_width=True)
     
+    fig.update_layout(hovermode='x unified')
+    
     fig = px.bar(
         data_frame = qdfMax,
         x = "Quarter",
@@ -785,6 +810,8 @@ if Periodicity ==  'Quarterly':
     ))
 
     st.plotly_chart(fig, use_container_width=True)
+    
+    fig.update_layout(hovermode='x unified')
 
     fig = px.bar(
         data_frame = qdf,
@@ -806,6 +833,8 @@ if Periodicity ==  'Quarterly':
     ))
 
     st.plotly_chart(fig, use_container_width=True)
+    
+    fig.update_layout(hovermode='x unified')
 
 # display Yearly plots
 
@@ -831,6 +860,8 @@ if Periodicity ==  'Yearly':
     
     st.plotly_chart(fig, use_container_width=True)
     
+    fig.update_layout(hovermode='x unified')
+    
     
     
     fig = px.bar(
@@ -853,6 +884,8 @@ if Periodicity ==  'Yearly':
     ))
     
     st.plotly_chart(fig, use_container_width=True)
+    
+    fig.update_layout(hovermode='x unified')
     
     
     fig = px.bar(
@@ -877,6 +910,8 @@ if Periodicity ==  'Yearly':
     
     st.plotly_chart(fig, use_container_width=True)
     
+    fig.update_layout(hovermode='x unified')
+    
     fig = px.line(
         data_frame = ydfMax,
         x = "Year",
@@ -896,6 +931,8 @@ if Periodicity ==  'Yearly':
     
     
     st.plotly_chart(fig, use_container_width=True)
+    
+    fig.update_layout(hovermode='x unified')
     
     fig = px.bar(
         data_frame = ydfMax,
@@ -918,6 +955,8 @@ if Periodicity ==  'Yearly':
     
     st.plotly_chart(fig, use_container_width=True)
     
+    fig.update_layout(hovermode='x unified')
+    
     fig = px.bar(
         data_frame = ydfMax,
         x = "Year",
@@ -939,6 +978,8 @@ if Periodicity ==  'Yearly':
     
     
     st.plotly_chart(fig, use_container_width=True)
+    
+    fig.update_layout(hovermode='x unified')
 
     fig = px.bar(
         data_frame = ydfMax,
@@ -961,6 +1002,8 @@ if Periodicity ==  'Yearly':
 
     st.plotly_chart(fig, use_container_width=True)
     
+    fig.update_layout(hovermode='x unified')
+    
     fig = px.bar(
         data_frame = ydf,
         x = "Year",
@@ -981,6 +1024,8 @@ if Periodicity ==  'Yearly':
     ))
 
     st.plotly_chart(fig, use_container_width=True)
+    
+    fig.update_layout(hovermode='x unified')
     
 #%%
 
