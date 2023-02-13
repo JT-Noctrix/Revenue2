@@ -72,7 +72,7 @@ with col1:
      "Choose Preset",
      ('Optimistic', 'Conservative', 'Realistic'), index=2, disabled=True)
     
-    precision                          =     st.slider("Number of Months to forecast",
+    Month_size                          =     st.slider("Number of Months to forecast",
                                                                 min_value = 12,
                                                                 max_value = 60,
                                                                 value = 48 )
@@ -427,21 +427,21 @@ df = pd.DataFrame({
     'Month':Month,
     'Quarter':Quarter,
     'Year':Year,
-    'New_Clinics':round(New_Clinics, Decimal_places) ,
-    'Total_prescribing_clinics':round(Total_prescribing_clinics, Decimal_places),
-    'New_patients_by_month':round(New_patients_by_month, Decimal_places),
-    'Total_patients':round(Total_patients, Decimal_places),
-    'Monthly_Revenue': round(Monthly_Revenue, Decimal_places),
-    'Revenue_New_Patients':round(Revenue_New_Patients, Decimal_places),
-    'Revenue_Existing_Patients':round(Revenue_Existing_Patients, Decimal_places),
-    'Revenue_Devices':round(Revenue_Devices, Decimal_places),
-    'Revenue_Consumables':round(Revenue_Consumables, Decimal_places),
-    'Device_Percentage':round(Device_Percentage, Decimal_places),
-    'Consumables_Percentage':round(Consumables_Percentage, Decimal_places),
-    'Staff_required':round(Staff_required, Decimal_places),
-    'TOMAC_Inventory':round(iTOMA, Decimal_places),
-    'CCG_Inventory':round(iCCG, Decimal_places),
-    'CDI_Inventory':round(iCDI, Decimal_places)})
+    'New_Clinics':np.round(New_Clinics, Decimal_places) ,
+    'Total_prescribing_clinics':np.round(Total_prescribing_clinics, Decimal_places),
+    'New_patients_by_month':np.round(New_patients_by_month, Decimal_places),
+    'Total_patients':np.round(Total_patients, Decimal_places),
+    'Monthly_Revenue': np.round(Monthly_Revenue, Decimal_places),
+    'Revenue_New_Patients':np.round(Revenue_New_Patients, Decimal_places),
+    'Revenue_Existing_Patients':np.round(Revenue_Existing_Patients, Decimal_places),
+    'Revenue_Devices':np.round(Revenue_Devices, Decimal_places),
+    'Revenue_Consumables':np.round(Revenue_Consumables, Decimal_places),
+    'Device_Percentage':np.round(Device_Percentage, Decimal_places),
+    'Consumables_Percentage':np.round(Consumables_Percentage, Decimal_places),
+    'Staff_required':np.round(Staff_required, Decimal_places),
+    'TOMAC_Inventory':np.round(iTOMA, Decimal_places),
+    'CCG_Inventory':np.round(iCCG, Decimal_places),
+    'CDI_Inventory':np.round(iCDI, Decimal_places)})
 
 st.write("")
 st.write("")
