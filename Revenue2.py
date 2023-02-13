@@ -71,16 +71,21 @@ with col1:
     choice = st.radio(
      "Choose Preset",
      ('Optimistic', 'Conservative', 'Realistic'), index=2, disabled=True)
+    
+    precision                          =     st.slider("Number of Months to forecast",
+                                                                min_value = 12,
+                                                                max_value = 60,
+                                                                value = 48 )
 
 with col2:
     Periodicity = st.radio(
      "Periodicity:",
      ('Yearly', 'Quarterly', 'Monthly'), index=1, disabled=False)
     
-    Month_size                          =     st.slider("Number of Months to forecast",
-                                                                min_value = 12,
-                                                                max_value = 60,
-                                                                value = 48 )
+    Decimal_places                          =     st.slider("Number of Decimal Places",
+                                                                min_value = 0,
+                                                                max_value = 8,
+                                                                value = 2 )
 
 if choice == "Conservative":
     Set_Initial_Number_Of_Clinics                       = 1
@@ -422,21 +427,21 @@ df = pd.DataFrame({
     'Month':Month,
     'Quarter':Quarter,
     'Year':Year,
-    'New_Clinics':New_Clinics,
-    'Total_prescribing_clinics':Total_prescribing_clinics,
-    'New_patients_by_month':New_patients_by_month,
-    'Total_patients':Total_patients,
-    'Monthly_Revenue': Monthly_Revenue,
-    'Revenue_New_Patients':Revenue_New_Patients,
-    'Revenue_Existing_Patients':Revenue_Existing_Patients,
-    'Revenue_Devices':Revenue_Devices,
-    'Revenue_Consumables':Revenue_Consumables,
-    'Device_Percentage':Device_Percentage,
-    'Consumables_Percentage':Consumables_Percentage,
-    'Staff_required':Staff_required,
-    'TOMAC_Inventory':iTOMA,
-    'CCG_Inventory':iCCG,
-    'CDI_Inventory':iCDI})
+    'New_Clinics':round(New_Clinics, Decimal_places) ,
+    'Total_prescribing_clinics':round(Total_prescribing_clinics, Decimal_places),
+    'New_patients_by_month':round(New_patients_by_month, Decimal_places),
+    'Total_patients':round(Total_patients, Decimal_places),
+    'Monthly_Revenue': round(Monthly_Revenue, Decimal_places),
+    'Revenue_New_Patients':round(Revenue_New_Patients, Decimal_places),
+    'Revenue_Existing_Patients':round(Revenue_Existing_Patients, Decimal_places),
+    'Revenue_Devices':round(Revenue_Devices, Decimal_places),
+    'Revenue_Consumables':round(Revenue_Consumables, Decimal_places),
+    'Device_Percentage':round(Device_Percentage, Decimal_places),
+    'Consumables_Percentage':round(Consumables_Percentage, Decimal_places),
+    'Staff_required':round(Staff_required, Decimal_places),
+    'TOMAC_Inventory':round(iTOMA, Decimal_places),
+    'CCG_Inventory':round(iCCG, Decimal_places),
+    'CDI_Inventory':round(iCDI, Decimal_places)})
 
 st.write("")
 st.write("")
