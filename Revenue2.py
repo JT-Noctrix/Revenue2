@@ -266,12 +266,12 @@ with st.sidebar.form(key='my_form'):
 
     with st.expander("👩‍⚕️ Clinical Support Staffing"):    
     #Total CMS Reimbursement per unit
-        Existing_Hours_Per_Week                      =     st.slider("Hours of support per week per exisiting site",
+        Existing_Hours_Per_Week                     =     st.slider("Hours of support per week per exisiting site",
                                                                 min_value = 1,
                                                                 max_value = 12,
                                                                 value = Set_Existing_Hours_Per_Week)
         
-        New_Hours_Per_Week                           =     st.slider("Hours of support per week for a new site",
+        New_Hours_Per_Week                          =     st.slider("Hours of support per week for a new site",
                                                                 min_value = 10,
                                                                 max_value = 40,
                                                                 value = Set_New_Hours_Per_Week)
@@ -280,6 +280,21 @@ with st.sidebar.form(key='my_form'):
                                                                 min_value = 20,
                                                                 max_value = 55,
                                                                 value = Set_Max_Hours_Per_Week )
+        
+        Calibration_on_site                         =     st.slider("Calibration on-site time (min)",
+                                                                min_value = 15,
+                                                                max_value = 120,
+                                                                value = 30 )
+        
+        Patient_setup_call_time                     =     st.slider("Patient setup call time (min)",
+                                                                min_value = 15,
+                                                                max_value = 120,
+                                                                value = 60 )
+        
+        Follow_up_time                              =     st.slider("14-day follow-up time (min)",
+                                                                min_value = 15,
+                                                                max_value = 120,
+                                                                value = 45 )
         
     with st.expander("🪙 Cost of goods sold (COGS)"):    
     #Total CMS Reimbursement per unit
@@ -312,6 +327,16 @@ with st.sidebar.form(key='my_form'):
                                                                 min_value = 5,
                                                                 max_value = 50,
                                                                 value = 18)
+    
+        CAC_COGS_Y1                      =     st.slider("Fully loaded CAC Year 1",
+                                                                min_value = 500,
+                                                                max_value = 2000,
+                                                                value = 1500)
+        
+        CAC_COGS_AF1                      =     st.slider("Fully loaded CAC After Year 1",
+                                                                min_value = 500,
+                                                                max_value = 2000,
+                                                                value = 750)
         
 
         
