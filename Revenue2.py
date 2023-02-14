@@ -281,6 +281,40 @@ with st.sidebar.form(key='my_form'):
                                                                 max_value = 55,
                                                                 value = Set_Max_Hours_Per_Week )
         
+    with st.expander("🪙 Cost of goods sold (COGS)"):    
+    #Total CMS Reimbursement per unit
+        NTX_TOMAC_COGS_Y1                      =     st.slider("NTX100 TOMAC Kit COGS Year 1",
+                                                                min_value = 250,
+                                                                max_value = 2000,
+                                                                value = 1000)
+        
+        NTX_TOMAC_COGS_AF1                      =     st.slider("NTX100 TOMAC Kit COGS After Year 1",
+                                                                min_value = 250,
+                                                                max_value = 2000,
+                                                                value = 500)
+        
+        CDI_COGS_Y1                      =     st.slider("Monthly CDI COGS Year 1",
+                                                                min_value = 5,
+                                                                max_value = 50,
+                                                                value = 30)
+        
+        CDI_COGS_AF1                      =     st.slider("Monthly CDI COGS After Year 1",
+                                                                min_value = 5,
+                                                                max_value = 50,
+                                                                value = 25)
+        
+        CCG_COGS_Y1                      =     st.slider("Pair of CCG COGS Year 1",
+                                                                min_value = 5,
+                                                                max_value = 50,
+                                                                value = 25)
+        
+        CCG_COGS_AF1                      =     st.slider("Pair of CCG COGS After Year 1",
+                                                                min_value = 5,
+                                                                max_value = 50,
+                                                                value = 18)
+        
+
+        
     
     submit_button = st.form_submit_button(label='🖩 Calculate', on_click=form_callback)
 
