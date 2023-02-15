@@ -733,7 +733,7 @@ if Periodicity ==  'Monthly':
     fig = px.bar(
         data_frame = df,
         x = "Month",
-        y = ['Calibration_costs'],
+        y = ['Calibration_costs','Patient_Setup_Costs'],
         opacity = 0.5,
         color_discrete_sequence=['deepskyblue','MediumSlateBlue','DarkTurquoise'],
         orientation = "v",
@@ -1160,7 +1160,7 @@ if Periodicity ==  'Yearly':
     fig = px.bar(
         data_frame = ydf,
         x = "Year",
-        y = ['Calibration_costs'],
+        y = ['Calibration_costs','Patient_Setup_Costs'],
         opacity = 0.5,
         color_discrete_sequence=['deepskyblue','MediumSlateBlue','DarkTurquoise'],
         orientation = "v",
