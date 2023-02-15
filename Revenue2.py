@@ -386,14 +386,15 @@ Blended_CDI                 =  (Percent_Patients_On_Medicare * Total_CDI) + (Per
 numMonths = Month_size + 1 # add one to the actual number you want
 
 
-Month = np.arange(numMonths)
-New_Clinics = np.zeros(numMonths)
-Total_prescribing_clinics = np.zeros(numMonths)
-New_patients_by_month = np.zeros(numMonths)
-Hours_required = np.zeros(numMonths)
-Staff_required = np.zeros(numMonths)
-Calibration_costs = np.zeros(numMonths)
-Patient_Setup_Costs = np.zeros(numMonths)
+Month                       = np.arange(numMonths)
+New_Clinics                 = np.zeros(numMonths)
+Total_prescribing_clinics   = np.zeros(numMonths)
+New_patients_by_month       = np.zeros(numMonths)
+Hours_required              = np.zeros(numMonths)
+Staff_required              = np.zeros(numMonths)
+Calibration_costs           = np.zeros(numMonths)
+Patient_Setup_Costs         = np.zeros(numMonths)
+Follow_up_Costs             = np.zeros(numMonths)
 
 # Month one inital condition
 New_Clinics[1]               = Initial_Number_Of_Clinics
@@ -416,7 +417,7 @@ for i in range(2,numMonths):
   Staff_required[i]            = np.ceil(Hours_required[i] / Max_Hours_Per_Week)
   Calibration_costs[i]         = New_patients_by_month[i] * (Calibration_on_site * Noctrix_Tech_rate)/60
   Patient_Setup_Costs[i]       = New_patients_by_month[i] * (Patient_setup_call_time * Noctrix_Tech_rate)/60
-  
+  Follow_up_Costs[i]           = New_patients_by_month[pre] * (Follow_up_time * Noctrix_Tech_rate)/60
   
 
 One_patient_amortization = np.zeros((numMonths,numMonths))
@@ -513,7 +514,8 @@ df = pd.DataFrame({
     'CCG_Inventory':np.round(iCCG, Decimal_places),
     'CDI_Inventory':np.round(iCDI, Decimal_places),
     'Calibration_costs':Calibration_costs,
-    'Patient_Setup_Costs':Patient_Setup_Costs})
+    'Patient_Setup_Costs':Patient_Setup_Costs,
+    'Follow_up_Costs':Follow_up_Costs})
 
 st.write("")
 st.write("")
@@ -733,7 +735,7 @@ if Periodicity ==  'Monthly':
     fig = px.bar(
         data_frame = df,
         x = "Month",
-        y = ['Calibration_costs','Patient_Setup_Costs'],
+        y = ['Calibration_costs','Patient_Setup_Costs','Follow_up_Costs'],
         opacity = 0.5,
         color_discrete_sequence=['deepskyblue','MediumSlateBlue','DarkTurquoise'],
         orientation = "v",
@@ -1160,7 +1162,7 @@ if Periodicity ==  'Yearly':
     fig = px.bar(
         data_frame = ydf,
         x = "Year",
-        y = ['Calibration_costs','Patient_Setup_Costs'],
+        y = ['Calibration_costs','Patient_Setup_Costs','Follow_up_Costs'],
         opacity = 0.5,
         color_discrete_sequence=['deepskyblue','MediumSlateBlue','DarkTurquoise'],
         orientation = "v",
