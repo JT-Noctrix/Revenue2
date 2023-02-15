@@ -393,11 +393,14 @@ New_patients_by_month = np.zeros(numMonths)
 Hours_required = np.zeros(numMonths)
 Staff_required = np.zeros(numMonths)
 Calibration_costs = np.zeros(numMonths)
+Patient_Setup_Costs = np.zeros(numMonths)
 
 # Month one inital condition
-New_Clinics[1] = Initial_Number_Of_Clinics
+New_Clinics[1]               = Initial_Number_Of_Clinics
 Total_prescribing_clinics[1] = Initial_Number_Of_Clinics
-New_patients_by_month[1] = Initial_Number_Of_Clinics * Patients_Per_Clinic_Per_Month
+New_patients_by_month[1]     = Initial_Number_Of_Clinics * Patients_Per_Clinic_Per_Month
+Calibration_costs[1]         = New_patients_by_month[1] * (Calibration_on_site * Noctrix_Tech_rate)/60
+Patient_Setup_Costs[1]       = New_patients_by_month[1] * (Patient_setup_call_time * Noctrix_Tech_rate)/60
 
 # one time calculation for monthly growth factor
 
@@ -412,6 +415,7 @@ for i in range(2,numMonths):
   Hours_required[i]            = (New_Clinics[i] * New_Hours_Per_Week) + (Total_prescribing_clinics[i] * Existing_Hours_Per_Week)
   Staff_required[i]            = np.ceil(Hours_required[i] / Max_Hours_Per_Week)
   Calibration_costs[i]         = New_patients_by_month[i] * (Calibration_on_site * Noctrix_Tech_rate)/60
+  Patient_Setup_Costs[i]       = New_patients_by_month[i] * (Patient_setup_call_time * Noctrix_Tech_rate)/60
   
   
 
@@ -508,7 +512,8 @@ df = pd.DataFrame({
     'TOMAC_Inventory':np.round(iTOMA, Decimal_places),
     'CCG_Inventory':np.round(iCCG, Decimal_places),
     'CDI_Inventory':np.round(iCDI, Decimal_places),
-    'Calibration_costs':Calibration_costs})
+    'Calibration_costs':Calibration_costs,
+    'Patient_Setup_Costs':Patient_Setup_Costs})
 
 st.write("")
 st.write("")
