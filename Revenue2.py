@@ -296,6 +296,12 @@ with st.sidebar.form(key='my_form'):
                                                                 max_value = 120,
                                                                 value = 45 )
         
+        
+        Noctrix_Tech_rate                             =     st.slider("Noctrix Tech rate per hour ($)",
+                                                                min_value = 45,
+                                                                max_value = 250,
+                                                                value = 120 )
+        
     with st.expander("🪙 Cost of goods sold (COGS)"):    
     #Total CMS Reimbursement per unit
         NTX_TOMAC_COGS_Y1                      =     st.slider("NTX100 TOMAC Kit COGS Year 1",
@@ -386,7 +392,7 @@ Total_prescribing_clinics = np.zeros(numMonths)
 New_patients_by_month = np.zeros(numMonths)
 Hours_required = np.zeros(numMonths)
 Staff_required = np.zeros(numMonths)
-
+Calibration_costs = np.zeros(numMonths)
 
 # Month one inital condition
 New_Clinics[1] = Initial_Number_Of_Clinics
@@ -405,6 +411,7 @@ for i in range(2,numMonths):
   New_patients_by_month[i]     = np.ceil(Total_prescribing_clinics[pre] * (Monthly_Growth ** Month[pre]) * Patients_Per_Clinic_Per_Month + New_Clinics[i] * Patients_Per_Clinic_Per_Month)
   Hours_required[i]            = (New_Clinics[i] * New_Hours_Per_Week) + (Total_prescribing_clinics[i] * Existing_Hours_Per_Week)
   Staff_required[i]            = np.ceil(Hours_required[i] / Max_Hours_Per_Week)
+  Calibration_costs[i]         = New_patients_by_month[i] * (Calibration_on_site * Noctrix_Tech_rate)/60
   
   
 
@@ -500,7 +507,8 @@ df = pd.DataFrame({
     'Staff_required':np.round(Staff_required, Decimal_places),
     'TOMAC_Inventory':np.round(iTOMA, Decimal_places),
     'CCG_Inventory':np.round(iCCG, Decimal_places),
-    'CDI_Inventory':np.round(iCDI, Decimal_places)})
+    'CDI_Inventory':np.round(iCDI, Decimal_places),
+    'Calibration_costs':Calibration_costs})
 
 st.write("")
 st.write("")
@@ -716,8 +724,27 @@ if Periodicity ==  'Monthly':
     fig.update_layout(hovermode='x unified')
 
     st.plotly_chart(fig, use_container_width=True)
+    
+    fig = px.bar(
+        data_frame = df,
+        x = "Month",
+        y = ['Calibration_costs'],
+        opacity = 0.5,
+        color_discrete_sequence=['deepskyblue','MediumSlateBlue','DarkTurquoise'],
+        orientation = "v",
+        barmode = 'group',
+        title='Costs',
+        labels={'x': 'Month', 'value':'Cost'}
+    )    
+    
+    fig.update_layout(legend=dict(
+        yanchor="top",
+        y=0.99,
+        xanchor="left",
+        x=0.01
+    ))
 
-
+    fig.update_layout(hovermode='x unified')
 
 # display Quaterly plots
 
@@ -1108,7 +1135,7 @@ if Periodicity ==  'Yearly':
         orientation = "v",
         barmode = 'group',
         title='Number of Inventory',
-        labels={'x': 'Month', 'value':'Number of Inventory'}
+        labels={'x': 'Year', 'value':'Number of Inventory'}
     )    
     
     fig.update_layout(legend=dict(
@@ -1123,6 +1150,28 @@ if Periodicity ==  'Yearly':
     st.plotly_chart(fig, use_container_width=True)
     
 
+    fig = px.bar(
+        data_frame = ydf,
+        x = "Year",
+        y = ['Calibration_costs'],
+        opacity = 0.5,
+        color_discrete_sequence=['deepskyblue','MediumSlateBlue','DarkTurquoise'],
+        orientation = "v",
+        barmode = 'group',
+        title='Costs',
+        labels={'x': 'Year', 'value':'Cost'}
+    )    
+    
+    fig.update_layout(legend=dict(
+        yanchor="top",
+        y=0.99,
+        xanchor="left",
+        x=0.01
+    ))
+
+    fig.update_layout(hovermode='x unified')
+    
+    st.plotly_chart(fig, use_container_width=True)
     
 #%%
 
