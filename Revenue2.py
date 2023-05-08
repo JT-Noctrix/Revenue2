@@ -39,8 +39,8 @@ st.markdown(hide_decoration_bar_style, unsafe_allow_html=True)
 
 
 Set_Initial_Number_Of_Clinics                       = 2
-Set_Number_Of_New_Clinics_Monthly_Growth            = 10
-Set_Patients_Per_Clinic_Per_Month                   = 4
+Set_Number_Of_New_Clinics_Annual_Growth             = 10
+Set_Patients_Per_Clinic_Per_Month                   = 2
 Set_New_Patients_In_Existing_Clinic_Annual_Growth   = 10
 Set_Patient_Attrition_Rate_Per_Month                = 20
 Set_Percent_Patients_On_Medicare                    = 40
@@ -48,9 +48,9 @@ Set_Rental_Period_Refill_TOMA_CMS                   = 13
 Set_Rental_Period_Refill_TOMA_PP                    = 6
 Set_Rental_Period_Refill_CCG                        = 3
 Set_Rental_Period_Refill_CDI                        = 1
-Set_CMS_TOMA_CMS                                    = 450* 2
-Set_CMS_CCG                                         = 250* 2
-Set_CMS_CDI                                         = 14 * 2
+Set_CMS_TOMA_CMS                                    = 7500
+Set_CMS_CCG                                         = 200
+Set_CMS_CDI                                         = 30
 Set_Private_Payer_Premium_Over_Medicare             = 40
 
 
@@ -65,31 +65,34 @@ import streamlit as st
 
 # setting up the 3 columns for the Optimism, Periodicity and Printer sections
 
+def resetDefault():
+    del st.session_state['firstRunDone']
+
 col1, col2, col3 = st.columns(3)
 
 with col1:
     choice = st.radio(
      "Choose Preset",
-     ('Optimistic', 'Conservative', 'Realistic'), index=2, disabled=True)
+     ('Optimistic', 'Conservative', 'Realistic'), index=0, disabled=False, on_change=resetDefault)
     
     Month_size                          =     st.slider("Number of Months to forecast",
                                                                 min_value = 12,
                                                                 max_value = 60,
-                                                                value = 48 )
+                                                                value = 36, disabled=False)
 
 with col2:
     Periodicity = st.radio(
      "Periodicity:",
-     ('Yearly', 'Quarterly', 'Monthly'), index=1, disabled=False)
+     ('Yearly', 'Quarterly', 'Monthly'), index=2)
     
     Decimal_places                          =     st.slider("Number of Decimal Places",
                                                                 min_value = 0,
                                                                 max_value = 8,
-                                                                value = 2 )
+                                                                value = 0 )
 
 if choice == "Conservative":
     Set_Initial_Number_Of_Clinics                       = 1
-    Set_Number_Of_New_Clinics_Monthly_Growth            = 5
+    Set_Number_Of_New_Clinics_Annual_Growth            = 5
     Set_Patients_Per_Clinic_Per_Month                   = 2
     Set_New_Patients_In_Existing_Clinic_Annual_Growth   = 5
     Set_Patient_Attrition_Rate_Per_Month                = 15
@@ -106,8 +109,8 @@ if choice == "Conservative":
 
 if choice == "Realistic":
     Set_Initial_Number_Of_Clinics                       = 2
-    Set_Number_Of_New_Clinics_Monthly_Growth            = 10
-    Set_Patients_Per_Clinic_Per_Month                   = 4
+    Set_Number_Of_New_Clinics_Annual_Growth            = 10
+    Set_Patients_Per_Clinic_Per_Month                   = 2 # was 4, set to match new excel model
     Set_New_Patients_In_Existing_Clinic_Annual_Growth   = 10
     Set_Patient_Attrition_Rate_Per_Month                = 10
     Set_Percent_Patients_On_Medicare                    = 40
@@ -122,20 +125,20 @@ if choice == "Realistic":
     
     
 if choice == "Optimistic":
-    Set_Initial_Number_Of_Clinics                       = 4
-    Set_Number_Of_New_Clinics_Monthly_Growth            = 20
-    Set_Patients_Per_Clinic_Per_Month                   = 6
-    Set_New_Patients_In_Existing_Clinic_Annual_Growth   = 15
-    Set_Patient_Attrition_Rate_Per_Month                = 5
+    Set_Initial_Number_Of_Clinics                       = 10
+    Set_Number_Of_New_Clinics_Annual_Growth             = 50
+    Set_Patients_Per_Clinic_Per_Month                   = 4
+    Set_New_Patients_In_Existing_Clinic_Annual_Growth   = 10
+    Set_Patient_Attrition_Rate_Per_Month                = 10
     Set_Percent_Patients_On_Medicare                    = 30
     Set_Rental_Period_Refill_TOMA_CMS                   = 13
-    Set_Rental_Period_Refill_TOMA_PP                    = 4
+    Set_Rental_Period_Refill_TOMA_PP                    = 13
     Set_Rental_Period_Refill_CCG                        = 3
-    Set_Rental_Period_Refill_CDI                        = 3
-    Set_CMS_TOMA_CMS                                    = 750* 2
-    Set_CMS_CCG                                         = 375* 2
-    Set_CMS_CDI                                         = 90* 2
-    Set_Private_Payer_Premium_Over_Medicare             = 50
+    Set_Rental_Period_Refill_CDI                        = 1
+    Set_CMS_TOMA_CMS                                    = 7500
+    Set_CMS_CCG                                         = 200
+    Set_CMS_CDI                                         = 30
+    Set_Private_Payer_Premium_Over_Medicare             = 0
     
 # Default Support model values, can be implemented into optimising options 
 
@@ -144,8 +147,45 @@ Set_New_Hours_Per_Week                                  = 30
 Set_Max_Hours_Per_Week                                  = 36
     
 # the sliding out section used to set parameters to the model
+
+
+# %%
+# These functions are needed to be used in callbacks to keep the paried
+# inputs in sync.
+
+#kit loops
+def update_slider_kit():
+    st.session_state.slider_kit = st.session_state.text_kit
+
+def update_text_kit():
+    st.session_state.text_kit = st.session_state.slider_kit
+
+# CCG function loops to keep the two inputs linked
+def update_slider_CCG():
+    st.session_state.slider_CCG = st.session_state.text_CCG
+
+def update_text_CCG():
+    st.session_state.text_CCG = st.session_state.slider_CCG
     
-with st.sidebar.form(key='my_form'):
+# CDI function loops 
+
+def update_slider_CDI():
+    st.session_state.slider_CDI = st.session_state.text_CDI
+
+def update_text_CDI():
+    st.session_state.text_CDI = st.session_state.slider_CDI
+    
+### set default values
+if "firstRunDone" not in st.session_state:
+    st.session_state.slider_kit = st.session_state.text_kit = Set_CMS_TOMA_CMS
+    st.session_state.slider_CCG = st.session_state.text_CCG = Set_CMS_CCG
+    st.session_state.slider_CDI = st.session_state.text_CDI = Set_CMS_CDI
+    st.session_state.firstRunDone = True
+
+
+#%% Sidebar setup
+    
+with st.sidebar: #.form(key='my_form'):
     # logo in sidebar
     #st.markdown("<div style="text-align: center;">
     #            <img src="https://noctrixhealth.com/wp-content/uploads/2020/10/NoctrixLogo@2x.png" alt="logo" width=200/></div>
@@ -167,10 +207,10 @@ with st.sidebar.form(key='my_form'):
                                                                 max_value = 5,
                                                                 value = Set_Initial_Number_Of_Clinics)
     
-        Number_Of_New_Clinics_Monthly_Growth            =     st.slider("Number Of New Clinics Monthly Growth",
+        Number_Of_New_Clinics__Annual_Growth            =     st.slider("Number Of New Clinics Annual Growth",
                                                                 min_value = 0,
-                                                                max_value = 40,
-                                                                value = Set_Number_Of_New_Clinics_Monthly_Growth,
+                                                                max_value = 100,
+                                                                value = Set_Number_Of_New_Clinics_Annual_Growth,
                                                                 format="%i%%")*.01
                
         Patients_Per_Clinic_Per_Month                   =     st.slider("Patients Per Clinic Per Month [#]",
@@ -236,74 +276,103 @@ with st.sidebar.form(key='my_form'):
                                                                 max_value = 12,
                                                                 value = Set_Rental_Period_Refill_CDI, disabled=True) 
         
+    
         
-    with st.expander("💵 Reimbursement per unit"):    
+        
+    with st.expander("💵 ASP Assumptions"):    
     #Total CMS Reimbursement per unit
-        CMS_TOMA_CMS                                 =     st.slider("$ per unit hf-TOnic Motor ACtivator kit when Medicare",
+        
+       CMS_TOMA_CMS_TEXT                            =     st.number_input('New Kit ASP',                                                                          
+                                                                          key = "text_kit",
+                                                                          on_change = update_slider_kit,
+                                                                          step=1,
+                                                                          format="%i"
+                                                                          )
+
+       
+       CMS_TOMA_CMS                                 =     st.slider("New Kit ASP",
                                                                 min_value = 200,
-                                                                max_value = 12000,
-                                                                value = Set_CMS_TOMA_CMS,
-                                                                format="$%i")
+                                                                max_value = 12000,                                                             
+                                                                format="$%i",
+                                                                key="slider_kit",
+                                                                value  = Set_CMS_TOMA_CMS,
+                                                                on_change=update_text_kit,
+                                                                label_visibility="collapsed")
+       
+       st.markdown("""---""")
+       
+       CMS_CCG_TEXT                                 =     st.number_input('Garment refill (CCG) ASP', 
+                                                                          value = Set_CMS_CCG, 
+                                                                          key = "text_CCG",
+                                                                          on_change = update_slider_CCG
+                                                                          )
         
-        CMS_CCG                                      =     st.slider("$ per Compressive Conduction Garment",
-                                                                min_value = 0,
-                                                                max_value = 3000,
-                                                                value = Set_CMS_CCG,
-                                                                format="$%i")
         
-        CMS_CDI                                       =     st.slider("$ per Charge Dispersing Interface",
+       CMS_CCG                                      =     st.slider("Garment refill (CCG) ASP",
+                                                            min_value = 0,
+                                                            max_value = 3000,
+                                                            format="$%i",
+                                                            key = "slider_CCG",
+                                                            value=Set_CMS_CCG,
+                                                            on_change = update_text_CCG,
+                                                            label_visibility="collapsed")
+       
+       st.markdown("""---""")
+       
+       CMS_CDI_TEXT                                 =     st.number_input('Monthly electrode refill (CDI) ASP', 
+                                                                          value = Set_CMS_CDI, 
+                                                                          key = "text_CDI",                                                                          
+                                                                          on_change = update_slider_CDI
+                                                                          )
+        
+       CMS_CDI                                       =     st.slider("Monthly electrode refill (CDI) ASP",
                                                                 min_value = 15,
                                                                 max_value = 1100,
+                                                                format="$%i",
+                                                                key = "slider_CDI",
                                                                 value = Set_CMS_CDI,
-                                                                format="$%i")
+                                                                on_change=update_text_CDI,
+                                                                label_visibility="collapsed")
         
-        Private_Payer_Premium_Over_Medicare           =     st.slider("Private Payer Premium Over Medicare",
-                                                                min_value = 0,
-                                                                max_value = 100,
-                                                                value = Set_Private_Payer_Premium_Over_Medicare,
-                                                                format="%i%%")*.01
+       Private_Payer_Premium_Over_Medicare           =    0
+       # medicare not a factor currently
+        
+       # Private_Payer_Premium_Over_Medicare           =     st.slider("Private Payer Premium Over Medicare",
+       #                                                         min_value = 0,
+       #                                                         max_value = 100,
+       #                                                         value = Set_Private_Payer_Premium_Over_Medicare,
+       #                                                         format="%i%%")*.01
+      
+        
+        
 
 
-    with st.expander("👩‍⚕️ Clinical Support Staffing"):    
-    #Total CMS Reimbursement per unit
-        Existing_Hours_Per_Week                     =     st.slider("Hours of support per week per exisiting site",
-                                                                min_value = 1,
-                                                                max_value = 12,
-                                                                value = Set_Existing_Hours_Per_Week)
-        
-        New_Hours_Per_Week                          =     st.slider("Hours of support per week for a new site",
+    with st.expander("👩‍⚕️ Clinical Support Staffing"):   
+        Number_of_Patients_per_Tech                     =     st.slider("Number of Patients per Remote Tech",
                                                                 min_value = 10,
-                                                                max_value = 40,
-                                                                value = Set_New_Hours_Per_Week)
-              
-        Max_Hours_Per_Week                          =     st.slider("Number of Maximum Hours per Week Per Specialist",
-                                                                min_value = 20,
-                                                                max_value = 55,
-                                                                value = Set_Max_Hours_Per_Week )
+                                                                max_value = 50,
+                                                                value = 20)
         
-        Calibration_on_site                         =     st.slider("Calibration on-site time (min)",
-                                                                min_value = 15,
-                                                                max_value = 120,
-                                                                value = 30 )
+        Number_of_Patients_per_Specialist               =     st.slider("Number of Patients per Field Clinical Specialist",
+                                                                min_value = 80,
+                                                                max_value = 300,
+                                                                value = 200)
         
-        Patient_setup_call_time                     =     st.slider("Patient setup call time (min)",
-                                                                min_value = 15,
-                                                                max_value = 120,
-                                                                value = 60 )
+        Cost_per_Calibration_Session                    =     st.slider("Cost of a Calibration Session",
+                                                                min_value = 100,
+                                                                max_value = 300,
+                                                                value = 200)
         
-        Follow_up_time                              =     st.slider("14-day follow-up time (min)",
-                                                                min_value = 15,
-                                                                max_value = 120,
-                                                                value = 45 )
+        Cost_per_New_site                               =     st.slider("Cost of a New Site",
+                                                                min_value = 2000,
+                                                                max_value = 4000,
+                                                                value = 3000) 
         
         
-        Noctrix_Tech_rate                             =     st.slider("Noctrix Tech rate per hour ($)",
-                                                                min_value = 45,
-                                                                max_value = 250,
-                                                                value = 120 )
+        
         
     with st.expander("🪙 Cost of goods sold (COGS)"):    
-    #Total CMS Reimbursement per unit
+
         NTX_TOMAC_COGS_Y1                      =     st.slider("NTX100 TOMAC Kit COGS Year 1",
                                                                 min_value = 250,
                                                                 max_value = 2000,
@@ -347,7 +416,7 @@ with st.sidebar.form(key='my_form'):
 
         
     
-    submit_button = st.form_submit_button(label='🖩 Calculate', on_click=form_callback)
+
 
     
 #%% Calculations
@@ -386,39 +455,42 @@ Blended_CDI                 =  (Percent_Patients_On_Medicare * Total_CDI) + (Per
 numMonths = Month_size + 1 # add one to the actual number you want
 
 
-Month                       = np.arange(numMonths)
-New_Clinics                 = np.zeros(numMonths)
-Total_prescribing_clinics   = np.zeros(numMonths)
-New_patients_by_month       = np.zeros(numMonths)
-Hours_required              = np.zeros(numMonths)
-Staff_required              = np.zeros(numMonths)
-Calibration_costs           = np.zeros(numMonths)
-Patient_Setup_Costs         = np.zeros(numMonths)
-Follow_up_Costs             = np.zeros(numMonths)
+Month                             = np.arange(numMonths)
+New_Clinics                       = np.zeros(numMonths)
+Total_prescribing_clinics         = np.zeros(numMonths)
+New_patients_by_month             = np.zeros(numMonths)
+Hours_required                    = np.zeros(numMonths)
+Staff_required                    = np.zeros(numMonths)
+Calibration_costs                 = np.zeros(numMonths)
+Patient_Setup_Costs               = np.zeros(numMonths)
+Follow_up_Costs                   = np.zeros(numMonths)
+NTX100_TOMAC_Kit_COGS             = np.zeros(numMonths)
+CDI_COGS                          = np.zeros(numMonths)
+CCG_COGS                          = np.zeros(numMonths)
+New_patients_per_month_per_clinic = np.zeros(numMonths)
 
 # Month one inital condition
-New_Clinics[1]               = Initial_Number_Of_Clinics
-Total_prescribing_clinics[1] = Initial_Number_Of_Clinics
-New_patients_by_month[1]     = Initial_Number_Of_Clinics * Patients_Per_Clinic_Per_Month
-Calibration_costs[1]         = New_patients_by_month[1] * (Calibration_on_site * Noctrix_Tech_rate)/60
-Patient_Setup_Costs[1]       = New_patients_by_month[1] * (Patient_setup_call_time * Noctrix_Tech_rate)/60
+New_Clinics[1]                      = Initial_Number_Of_Clinics
+Total_prescribing_clinics[1]        = Initial_Number_Of_Clinics
+New_patients_by_month[1]            = Initial_Number_Of_Clinics * Patients_Per_Clinic_Per_Month
+Calibration_costs[1]                = New_patients_by_month[1] * Cost_per_Calibration_Session
+New_patients_per_month_per_clinic[1]= Patients_Per_Clinic_Per_Month  
 
 # one time calculation for monthly growth factor
 
-Monthly_Growth = (1 + New_Patients_In_Existing_Clinic_Annual_Growth / 12)
+Monthly_Growth = 1 + (New_Patients_In_Existing_Clinic_Annual_Growth / 12)
+
+Number_Of_New_Clinics_Monthly_Growth = Number_Of_New_Clinics__Annual_Growth / 12
 
 # Loop for remaining months
 for i in range(2,numMonths):
   pre = i-1   # previous month
-  New_Clinics[i]               = (Total_prescribing_clinics[pre] * Number_Of_New_Clinics_Monthly_Growth) #np.ceil(Total_prescribing_clinics[pre] * Number_Of_New_Clinics_Monthly_Growth)
-  Total_prescribing_clinics[i] = Total_prescribing_clinics[pre] + New_Clinics[i] 
-  New_patients_by_month[i]     = np.ceil(Total_prescribing_clinics[pre] * (Monthly_Growth ** Month[pre]) * Patients_Per_Clinic_Per_Month + New_Clinics[i] * Patients_Per_Clinic_Per_Month)
-  Hours_required[i]            = (New_Clinics[i] * New_Hours_Per_Week) + (Total_prescribing_clinics[i] * Existing_Hours_Per_Week)
-  Staff_required[i]            = np.ceil(Hours_required[i] / Max_Hours_Per_Week)
-  Calibration_costs[i]         = New_patients_by_month[i] * (Calibration_on_site * Noctrix_Tech_rate)/60
-  Patient_Setup_Costs[i]       = New_patients_by_month[i] * (Patient_setup_call_time * Noctrix_Tech_rate)/60
-  Follow_up_Costs[i]           = New_patients_by_month[pre] * (Follow_up_time * Noctrix_Tech_rate)/60
-  
+  New_Clinics[i]                       = (Total_prescribing_clinics[pre] * Number_Of_New_Clinics_Monthly_Growth) #np.ceil(Total_prescribing_clinics[pre] * Number_Of_New_Clinics_Monthly_Growth)
+  Total_prescribing_clinics[i]         = Total_prescribing_clinics[pre] + New_Clinics[i] 
+  # had np.ceil in this step
+  New_patients_per_month_per_clinic[i] = New_patients_per_month_per_clinic[pre] * Monthly_Growth
+  #New_patients_by_month[i]             = (Total_prescribing_clinics[pre] * (Monthly_Growth ** Month[pre]) * Patients_Per_Clinic_Per_Month + New_Clinics[i] * Patients_Per_Clinic_Per_Month)
+  New_patients_by_month[i]             = Total_prescribing_clinics[i] * New_patients_per_month_per_clinic[i]
 
 One_patient_amortization = np.zeros((numMonths,numMonths))
 One_patient_amortization[1] =  New_patients_by_month
@@ -426,11 +498,43 @@ Attrition_Rate = 1 - Patient_Attrition_Rate_Per_Month
 
 for row in range(2,numMonths):
   for col in range(row,numMonths):
-    One_patient_amortization[row][col] = np.ceil(One_patient_amortization[row-1][col-1] * Attrition_Rate)
-
-
+    One_patient_amortization[row][col] = np.ceil(One_patient_amortization[row-1][col-1] * Attrition_Rate) # had np.ceil
 
 Total_patients = One_patient_amortization.sum(axis=0)
+
+
+# ==================================================================  #
+# updated formula for new prescibers used to match Excel model for a 12 month model
+# ==================================================================  #
+if False:
+    Salesperson_Rate = 6 # New Salesperson every 6 months
+    Number_of_Sales_Reps = np.ceil(Month/Salesperson_Rate)
+    Prescribers_Open_per_month_per_sales_rep = 2
+    
+    New_Clinics = Number_of_Sales_Reps * Prescribers_Open_per_month_per_sales_rep
+    
+    Total_prescribing_clinics = np.cumsum(New_Clinics)
+    New_patients_by_month = Total_prescribing_clinics * Patients_Per_Clinic_Per_Month
+    Total_patients = np.cumsum(New_patients_by_month)
+    # factor attrition
+    Total_patients = Total_patients * (1-Patient_Attrition_Rate_Per_Month)
+    New_patients_by_month = np.diff(Total_patients)
+    New_patients_by_month = np.insert(New_patients_by_month,0,Total_patients[0])
+#### experimental Sheet 3 complete
+
+
+
+Number_of_Field_Clinical_Specialists = np.ceil(Total_patients / Number_of_Patients_per_Specialist)
+Number_of_Remote_techs = np.ceil(New_patients_by_month / Number_of_Patients_per_Tech )
+
+
+Calibration_costs        = New_patients_by_month * Cost_per_Calibration_Session
+
+New_site_costs           = New_Clinics * Cost_per_New_site 
+
+
+
+#  ===
 
 TOMA_CMS                   = np.zeros(numMonths)
 TOMA_PP                    = np.zeros(numMonths)
@@ -438,18 +542,27 @@ CCG                        = np.zeros(numMonths)
 CDI                        = np.zeros(numMonths)
 
 # For TOMA, check if within rental period before calculating
-for month in Month:
+for month in Month[1:]:
   if month <= Rental_Period_Refill_TOMA_CMS:
     TOMA_CMS[month] = (Number_Per_Kit_TOMA_CMS * CMS_TOMA_CMS) / Rental_Period_Refill_TOMA_CMS
+    #else 0 as prefilled
 
   if month <= Rental_Period_Refill_TOMA_PP:
     TOMA_PP[month] = (Number_Per_Kit_TOMA_PP * CMS_TOMA_PP)  / Rental_Period_Refill_TOMA_PP 
+  # The CCG and CDI paid on refill months
+  
+  # take the modulus and if its zero (not non-zero) then fill the value
+  if not (month % Rental_Period_Refill_CCG): 
+      CCG[month] = CMS_CCG
+      
+  if not (month % Rental_Period_Refill_CDI):
+      CDI[month] = CMS_CDI
     
 # if after rental period, leave as 0
 
 # cast to all values the same result for CCG and CDI
-CCG[:] = Blended_CCG / Rental_Period_Refill_CCG
-CDI[:] = Blended_CDI / Rental_Period_Refill_CDI
+#CCG[:] = Blended_CCG / Rental_Period_Refill_CCG
+#CDI[:] = Blended_CDI / Rental_Period_Refill_CDI
 
 Total = (TOMA_CMS * Percent_Patients_On_Medicare) + (TOMA_PP * Percent_Private) + CCG + CDI
 
@@ -465,6 +578,8 @@ Device_Percentage = Revenue_Devices / Monthly_Revenue
 Consumables_Percentage = 1 - Device_Percentage
 
 # i indicates inventory, variables above are revenue
+
+
 
 iTOMA                  = np.zeros(numMonths) # each new patient requires TOMA
 iCCG                   = np.zeros(numMonths)
@@ -487,7 +602,21 @@ for month in Month:
     
     iCDI[month]  = (iTOMA[month] +                                              # each new TOMA will need a CCG kit
                    (Total_patients[CDI_Refill_Month] * Number_Per_Kit_CDI))     # The patients we had y months ago are due for a refill
-                   
+
+# c indicates cost
+
+cTOMA                  = np.zeros(numMonths) 
+cCCG                   = np.zeros(numMonths)
+cCDI                   = np.zeros(numMonths) 
+CAC                    = np.zeros(numMonths) 
+
+for month in Month:
+    cTOMA[month] = iTOMA[month] * (NTX_TOMAC_COGS_Y1           if month <= 12 else NTX_TOMAC_COGS_AF1 )
+    cCCG[month]  = iCCG[month] * (CCG_COGS_Y1                  if month <= 12 else CCG_COGS_AF1 )
+    cCDI[month]  = iCDI[month] * (CDI_COGS_Y1                  if month <= 12 else CDI_COGS_AF1)
+    CAC[month]   = New_patients_by_month[month] * (CAC_COGS_Y1 if month <=12 else CAC_COGS_AF1)
+
+            
 
 
 Quarter = np.ceil(Month /3)
@@ -498,27 +627,38 @@ df = pd.DataFrame({
     'Month':Month,
     'Quarter':Quarter,
     'Year':Year,
-    'New_Clinics':np.round(New_Clinics, Decimal_places) ,
-    'Total_prescribing_clinics':np.round(Total_prescribing_clinics, Decimal_places),
-    'New_patients_by_month':np.round(New_patients_by_month, Decimal_places),
-    'Total_patients':np.round(Total_patients, Decimal_places),
+    'New Clinics':np.round(New_Clinics, Decimal_places) ,
+    'Total prescribing clinics':np.round(Total_prescribing_clinics, Decimal_places),
+    'New patients by month':np.round(New_patients_by_month, Decimal_places),
+    'Total patients':np.round(Total_patients, Decimal_places),
     'Monthly_Revenue': np.round(Monthly_Revenue, Decimal_places),
-    'Revenue_New_Patients':np.round(Revenue_New_Patients, Decimal_places),
-    'Revenue_Existing_Patients':np.round(Revenue_Existing_Patients, Decimal_places),
-    'Revenue_Devices':np.round(Revenue_Devices, Decimal_places),
-    'Revenue_Consumables':np.round(Revenue_Consumables, Decimal_places),
-    'Device_Percentage':np.round(Device_Percentage, Decimal_places),
-    'Consumables_Percentage':np.round(Consumables_Percentage, Decimal_places),
-    'Staff_required':np.round(Staff_required, Decimal_places),
-    'TOMAC_Inventory':np.round(iTOMA, Decimal_places),
-    'CCG_Inventory':np.round(iCCG, Decimal_places),
-    'CDI_Inventory':np.round(iCDI, Decimal_places),
-    'Calibration_costs':Calibration_costs,
-    'Patient_Setup_Costs':Patient_Setup_Costs,
-    'Follow_up_Costs':Follow_up_Costs})
+    'Revenue New Patients':np.round(Revenue_New_Patients, Decimal_places),
+    'Revenue Existing Patients':np.round(Revenue_Existing_Patients, Decimal_places),
+    'Revenue Devices':np.round(Revenue_Devices, Decimal_places),
+    'Revenue Consumables':np.round(Revenue_Consumables, Decimal_places),
+    'Device Percentage':np.round(Device_Percentage, Decimal_places),
+    'Consumables Percentage':np.round(Consumables_Percentage, Decimal_places),
+    'Staff required':np.round(Staff_required, Decimal_places),
+    'TOMAC Inventory':np.round(iTOMA, Decimal_places),
+    'CCG Inventory':np.round(iCCG, Decimal_places),
+    'CDI Inventory':np.round(iCDI, Decimal_places),
+    'Calibration costs':Calibration_costs,
+    'Patient Setup Costs':Patient_Setup_Costs,
+    'Follow up Costs':Follow_up_Costs,
+    'Number of Field Clinical Specialists':Number_of_Field_Clinical_Specialists,
+    'Number of Remote techs':Number_of_Remote_techs,
+    'New site costs':New_site_costs,
+    'CAC':CAC,
+    'Cost of TOMAC':np.round(cTOMA, Decimal_places),
+    'Cost of CCG':np.round(cCCG, Decimal_places),
+    'Cost of CDI':np.round(cCDI, Decimal_places)})
 
 st.write("")
 st.write("")
+
+#%% == creaate the quarterly and yearly DataFrames
+
+df['Revenue'] = df['Monthly_Revenue']
 
 qdf    = df.groupby('Quarter').sum()
 qdfMax = df.groupby('Quarter').max()  # for patient count
@@ -538,588 +678,32 @@ ydfMax['Year'] = ydfMax.index
 
 ydf['Revenue'] = ydf['Monthly_Revenue']
 
-if Periodicity ==  'Monthly':
-    fig = px.bar(
-        data_frame = df,
-        x = "Month",
-        y = ["Monthly_Revenue"], #,"Revenue_Devices"],
-        opacity = 0.5,
-        color_discrete_sequence=['MediumSlateBlue'],  
-        orientation = "v",
-        barmode = 'group',
-        title='Monthly Revenue',
-        labels={'x': 'Month', 'value':'Dollars USD'},
-    )
+#%% Main plots - barplot function
 
-    fig.update_layout(legend=dict(
-        yanchor="top",
-        y=0.99,
-        xanchor="left",
-        x=0.01
-    ))
-
-    fig.update_layout(hovermode='x unified')
+def barPlot(yArray, Title, Units, maximize=False):
     
-    st.plotly_chart(fig, use_container_width=True)
-
-
-
-
-    fig = px.bar(
-        data_frame = df,
-        x = "Month",
-        y = ["Revenue_New_Patients","Revenue_Existing_Patients"],
-        opacity = 0.5,
-        color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
-        orientation = "v",
-        barmode = 'group',
-        title='Existing vs New Patient Revenue',
-        labels={'x': 'Month', 'value':'Dollars USD'},
-    )
-
-    fig.update_layout(legend=dict(
-        yanchor="top",
-        y=0.99,
-        xanchor="left",
-        x=0.01
-    ))
-
-    fig.update_layout(hovermode='x unified')
-
-    st.plotly_chart(fig, use_container_width=True)
-
-
-    fig = px.bar(
-        data_frame = df,
-        x = "Month",
-        y = ["Revenue_Devices","Revenue_Consumables"],
-        opacity = 0.5,
-        color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
-        orientation = "v",
-        barmode = 'group',
-        title='Devices vs Consumables Revenue',
-        labels={'x': 'Month', 'value':'Dollars USD'},
-    )
-
-    fig.update_layout(legend=dict(
-        yanchor="top",
-        y=0.99,
-        xanchor="left",
-        x=0.01
-    ))
-    
-    fig.update_layout(hovermode='x unified')
-
-    st.plotly_chart(fig, use_container_width=True)
-
-    fig = px.line(
-        data_frame = df,
-        x = "Month",
-        y = ["Device_Percentage","Consumables_Percentage"],
-        color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
-        orientation = "v",
-        title='Devices vs Consumables Revenue',
-        labels={'x': 'Month', 'value':'% of revenue'},
-    )
-
-    fig.update_layout(legend=dict(
-        yanchor="top",
-        y=0.99,
-        xanchor="left",
-        x=0.01
-    ))
-    
-    fig.update_layout(hovermode='x unified')
-    
-    st.plotly_chart(fig, use_container_width=True)
-    
-
-
-    fig = px.bar(
-        data_frame = df,
-        x = "Month",
-        y = ["New_Clinics","Total_prescribing_clinics"],
-        opacity = 0.5,
-        color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
-        orientation = "v",
-        barmode = 'group',
-        title='Number of Clinics',
-        labels={'x': 'Month', 'value':'Number of Clinics'},
-    )
-
-    fig.update_layout(legend=dict(
-        yanchor="top",
-        y=0.99,
-        xanchor="left",
-        x=0.01
-    ))
-    
-    fig.update_layout(hovermode='x unified')
-    
-    st.plotly_chart(fig, use_container_width=True)
-    
-
-
-    fig = px.bar(
-        data_frame = df,
-        x = "Month",
-        y = ['New_patients_by_month','Total_patients'],
-        opacity = 0.5,
-        color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
-        orientation = "v",
-        barmode = 'group',
-        title='Number of Patients',
-        labels={'x': 'Month', 'value':'Number of Patients'},
-    )
-
-    fig.update_layout(legend=dict(
-        yanchor="top",
-        y=0.99,
-        xanchor="left",
-        x=0.01
-    ))
-    
-    fig.update_layout(hovermode='x unified')
-
-    st.plotly_chart(fig, use_container_width=True)
-    
-
-    fig = px.bar(
-        data_frame = df,
-        x = "Month",
-        y = ['Staff_required'],
-        opacity = 0.5,
-        color_discrete_sequence=['MediumSlateBlue'],
-        orientation = "v",
-        barmode = 'group',
-        title='Number of Staff',
-        labels={'x': 'Month', 'value':'Number of Support Staff'},
-    )
-
-    fig.update_layout(legend=dict(
-        yanchor="top",
-        y=0.99,
-        xanchor="left",
-        x=0.01
-    ))
-
-    fig.update_layout(hovermode='x unified')
-
-    st.plotly_chart(fig, use_container_width=True)
-    
-
-    
-    fig = px.bar(
-        data_frame = df,
-        x = "Month",
-        y = ['TOMAC_Inventory','CCG_Inventory','CDI_Inventory'],
-        opacity = 0.5,
-        color_discrete_sequence=['deepskyblue','MediumSlateBlue','DarkTurquoise'],
-        orientation = "v",
-        barmode = 'group',
-        title='Number of Inventory',
-        labels={'x': 'Month', 'value':'Number of Inventory'}
-    )
-
-    fig.update_layout(legend=dict(
-        yanchor="top",
-        y=0.99,
-        xanchor="left",
-        x=0.01
-    ))
-    
-    fig.update_layout(hovermode='x unified')
-
-    st.plotly_chart(fig, use_container_width=True)
-    
-    fig = px.bar(
-        data_frame = df,
-        x = "Month",
-        y = ['Calibration_costs','Patient_Setup_Costs','Follow_up_Costs'],
-        opacity = 0.5,
-        color_discrete_sequence=['deepskyblue','MediumSlateBlue','DarkTurquoise'],
-        orientation = "v",
-        barmode = 'group',
-        title='Costs',
-        labels={'x': 'Month', 'value':'Cost'}
-    )    
-    
-    fig.update_layout(legend=dict(
-        yanchor="top",
-        y=0.99,
-        xanchor="left",
-        x=0.01
-    ))
-
-    fig.update_layout(hovermode='x unified')
-    
-    st.plotly_chart(fig, use_container_width=True)
-
-# display Quaterly plots
-
-if Periodicity ==  'Quarterly':
-    fig = px.bar(
-        data_frame = qdf,
-        x = "Quarter",
-        y = ["Revenue"], #,"Revenue_Devices"],
-        opacity = 0.5,
-        color_discrete_sequence=['MediumSlateBlue'],  
-        orientation = "v",
-        barmode = 'group',
-        title='Quarterly Revenue',
-        labels={'x': 'Quarter', 'value':'Dollars USD'},
-    )
-    
-    fig.update_layout(legend=dict(
-        yanchor="top",
-        y=0.99,
-        xanchor="left",
-        x=0.01
-    ))
-    
-    fig.update_layout(hovermode='x unified')    
-    
-    st.plotly_chart(fig, use_container_width=True)
-    
-
-    
-    
-    fig = px.bar(
-        data_frame = qdf,
-        x = "Quarter",
-        y = ["Revenue_New_Patients","Revenue_Existing_Patients"],
-        opacity = 0.5,
-        color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
-        orientation = "v",
-        barmode = 'group',
-        title='Existing vs New Patient Revenue',
-        labels={'x': 'Quarter', 'value':'Dollars USD'},
-    )
-    
-    fig.update_layout(legend=dict(
-        yanchor="top",
-        y=0.99,
-        xanchor="left",
-        x=0.01
-    ))
-    
-    fig.update_layout(hovermode='x unified')
-    
-    st.plotly_chart(fig, use_container_width=True)
-    
-
+    # default is cumulative, in some cases(percentage) the maximum value is more approraite
+    if Periodicity ==  'Monthly':
+        DataFrame = df[1:]
+    if Periodicity ==  'Quarterly' and not maximize:
+        DataFrame = qdf[1:]
+    if Periodicity ==  'Quarterly' and maximize:
+        DataFrame = qdfMax[1:]
+    if Periodicity ==  'Yearly' and not maximize:
+        DataFrame = ydf[1:]
+    if Periodicity ==  'Yearly' and maximize:
+        DataFrame = ydfMax[1:]
         
     fig = px.bar(
-        data_frame = qdf,
-        x = "Quarter",
-        y = ["Revenue_Devices","Revenue_Consumables"],
-        opacity = 0.5,
-        color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
-        orientation = "v",
-        barmode = 'group',
-        title='Devices vs Consumables Revenue',
-        labels={'x': 'Quarter', 'value':'Dollars USD'},
-    )
-    
-    fig.update_layout(legend=dict(
-        yanchor="top",
-        y=0.99,
-        xanchor="left",
-        x=0.01
-    ))
-    
-    fig.update_layout(hovermode='x unified')
-    
-    st.plotly_chart(fig, use_container_width=True)
-    
-
-    
-    fig = px.line(
-        data_frame = qdfMax,
-        x = "Quarter",
-        y = ["Device_Percentage","Consumables_Percentage"],
-        color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
-        orientation = "v",
-        title='Devices vs Consumables Revenue',
-        labels={'x': 'Quarter', 'value':'% of revenue'},
-    )
-    
-    fig.update_layout(legend=dict(
-        yanchor="top",
-        y=0.99,
-        xanchor="left",
-        x=0.01
-    ))
-    
-    fig.update_layout(hovermode='x unified')
-    
-    st.plotly_chart(fig, use_container_width=True)
-    
-
-    
-    fig = px.bar(
-        data_frame = qdfMax,
-        x = "Quarter",
-        y = ["New_Clinics","Total_prescribing_clinics"],
-        opacity = 0.5,
-        color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
-        orientation = "v",
-        barmode = 'group',
-        title='Number of Clinics',
-        labels={'x': 'Quarter', 'value':'Number of Clinics'},
-    )
-    
-    fig.update_layout(legend=dict(
-        yanchor="top",
-        y=0.99,
-        xanchor="left",
-        x=0.01
-    ))
-    
-    fig.update_layout(hovermode='x unified')
-    
-    st.plotly_chart(fig, use_container_width=True)
-    
-
-    
-    fig = px.bar(
-        data_frame = qdfMax,
-        x = "Quarter",
-        y = ['New_patients_by_month','Total_patients'],
-        opacity = 0.5,
-        color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
-        orientation = "v",
-        barmode = 'group',
-        title='Number of Patients',
-        labels={'x': 'Quarter', 'value':'Number of Patients'},
-    )
-    
-    fig.update_layout(legend=dict(
-        yanchor="top",
-        y=0.99,
-        xanchor="left",
-        x=0.01
-    ))
-    
-    fig.update_layout(hovermode='x unified')
-    
-    st.plotly_chart(fig, use_container_width=True)
-    
-
-    
-    fig = px.bar(
-        data_frame = qdfMax,
-        x = "Quarter",
-        y = ['Staff_required'],
-        opacity = 0.5,
-        color_discrete_sequence=['MediumSlateBlue'],
-        orientation = "v",
-        barmode = 'group',
-        title='Number of Staff',
-        labels={'x': 'Quarter', 'value':'Number of Support Staff'},
-    )
-
-    fig.update_layout(legend=dict(
-        yanchor="top",
-        y=0.99,
-        xanchor="left",
-        x=0.01
-    ))
-    
-    fig.update_layout(hovermode='x unified')
-
-    st.plotly_chart(fig, use_container_width=True)
-    
-
-
-    fig = px.bar(
-        data_frame = qdf,
-        x = "Quarter",
-        y = ['TOMAC_Inventory','CCG_Inventory','CDI_Inventory'],
+        data_frame = DataFrame,
+        x = Periodicity[:-2],
+        y = yArray,
         opacity = 0.5,
         color_discrete_sequence=['deepskyblue','MediumSlateBlue','DarkTurquoise'],
         orientation = "v",
         barmode = 'group',
-        title='Number of Inventory',
-        labels={'x': 'Quarter', 'value':'Number of Inventory'}
-    )    
-    
-    fig.update_layout(legend=dict(
-        yanchor="top",
-        y=0.99,
-        xanchor="left",
-        x=0.01
-    ))
-
-    fig.update_layout(hovermode='x unified')
-    
-    st.plotly_chart(fig, use_container_width=True)
-    
-
-
-# display Yearly plots
-
-if Periodicity ==  'Yearly':
-    fig = px.bar(
-        data_frame = ydf,
-        x = "Year",
-        y = ["Revenue"], #,"Revenue_Devices"],
-        opacity = 0.5,
-        color_discrete_sequence=['MediumSlateBlue'],  
-        orientation = "v",
-        barmode = 'group',
-        title='Yearly Revenue',
-        labels={'x': 'Year', 'value':'Dollars USD'},
-    )
-    
-    fig.update_layout(legend=dict(
-        yanchor="top",
-        y=0.99,
-        xanchor="left",
-        x=0.01
-    ))
-    
-    fig.update_layout(hovermode='x unified')
-    
-    st.plotly_chart(fig, use_container_width=True)
-    
-
-    
-    
-    
-    fig = px.bar(
-        data_frame = ydf,
-        x = "Year",
-        y = ["Revenue_New_Patients","Revenue_Existing_Patients"],
-        opacity = 0.5,
-        color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
-        orientation = "v",
-        barmode = 'group',
-        title='Existing vs New Patient Revenue',
-        labels={'x': 'Year', 'value':'Dollars USD'},
-    )
-    
-    fig.update_layout(legend=dict(
-        yanchor="top",
-        y=0.99,
-        xanchor="left",
-        x=0.01
-    ))
-    
-    fig.update_layout(hovermode='x unified')
-    
-    st.plotly_chart(fig, use_container_width=True)
-    
-
-    
-    
-    fig = px.bar(
-        data_frame = ydf,
-        x = "Year",
-        y = ["Revenue_Devices","Revenue_Consumables"],
-        opacity = 0.5,
-        color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
-        orientation = "v",
-        barmode = 'group',
-        title='Devices vs Consumables Revenue',
-        labels={'x': 'Year', 'value':'Dollars USD'},
-    )
-    
-    fig.update_layout(legend=dict(
-        yanchor="top",
-        y=0.99,
-        xanchor="left",
-        x=0.01
-    ))
-    
-    fig.update_layout(hovermode='x unified')
-    
-    st.plotly_chart(fig, use_container_width=True)
-    
-    
-    fig = px.line(
-        data_frame = ydfMax,
-        x = "Year",
-        y = ["Device_Percentage","Consumables_Percentage"],
-        color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
-        orientation = "v",
-        title='Devices vs Consumables Revenue',
-        labels={'x': 'Year', 'value':'% of revenue'},
-    )
-    
-    fig.update_layout(legend=dict(
-        yanchor="top",
-        y=0.99,
-        xanchor="left",
-        x=0.01
-    ))
-    
-    fig.update_layout(hovermode='x unified')    
-    
-    st.plotly_chart(fig, use_container_width=True)
-    
-
-    
-    fig = px.bar(
-        data_frame = ydfMax,
-        x = "Year",
-        y = ["New_Clinics","Total_prescribing_clinics"],
-        opacity = 0.5,
-        color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
-        orientation = "v",
-        barmode = 'group',
-        title='Number of Clinics',
-        labels={'x': 'Year', 'value':'Number of Clinics'},
-    )
-    
-    fig.update_layout(legend=dict(
-        yanchor="top",
-        y=0.99,
-        xanchor="left",
-        x=0.01
-    ))
-    
-    fig.update_layout(hovermode='x unified')
-    
-    st.plotly_chart(fig, use_container_width=True)
-    
-
-    
-    fig = px.bar(
-        data_frame = ydfMax,
-        x = "Year",
-        y = ['New_patients_by_month','Total_patients'],
-        opacity = 0.5,
-        color_discrete_sequence=['deepskyblue','MediumSlateBlue'],
-        orientation = "v",
-        barmode = 'group',
-        title='Number of Patients',
-        labels={'x': 'Year', 'value':'Number of Patients'},
-    )
-    
-    fig.update_layout(legend=dict(
-        yanchor="top",
-        y=0.99,
-        xanchor="left",
-        x=0.01
-    ))
-    
-    fig.update_layout(hovermode='x unified')
-    
-    st.plotly_chart(fig, use_container_width=True)
-    
-
-
-    fig = px.bar(
-        data_frame = ydfMax,
-        x = "Year",
-        y = ['Staff_required'],
-        opacity = 0.5,
-        color_discrete_sequence=['MediumSlateBlue'],
-        orientation = "v",
-        barmode = 'group',
-        title='Number of Staff',
-        labels={'x': 'Year', 'value':'Number of Support Staff'},
+        title=Title,
+        labels={'x': Periodicity[:-2], 'value':Units},
     )
 
     fig.update_layout(legend=dict(
@@ -1128,61 +712,41 @@ if Periodicity ==  'Yearly':
         xanchor="left",
         x=0.01
     ))
+    
+    fig.update_layout(hovermode='x unified',         
+                      xaxis=dict(tickmode='linear',dtick=1))
+    
+    st.plotly_chart(fig, use_container_width=True)   
 
-    fig.update_layout(hovermode='x unified')
-    
-    st.plotly_chart(fig, use_container_width=True)
-    
+
+#%% Main Layout
+
+#barPlot (yArray,                                  Title,                 Units,              maximize=False)
+#New Clinics
+barPlot(["New Clinics","Total prescribing clinics"], "Number of Clinics", 'Number of Clinics', maximize=False)
+#New Patients
+barPlot(['New patients by month','Total patients'],"Number of Patients","Number of Patients")
+#Revenue
+barPlot(["Revenue"],f"{Periodicity} Revenue","Dollars USD $")
+#New Vs Existing
+barPlot(["Revenue New Patients","Revenue Existing Patients"],'Existing vs New Patient Revenue','Dollars USD $')
+#Device vs Consumables
+barPlot(["Revenue Devices","Revenue Consumables"],'Devices vs Consumables Revenue','Dollars USD $')
+#Seperator
+with st.expander("Costs, Inventory and Staff"):
+    # Inventory
+    barPlot(['TOMAC Inventory','CCG Inventory','CDI Inventory'],'Inventory','Units')
+    # Inventory costs
+    barPlot(['Cost of CCG','Cost of CDI','Cost of TOMAC'],'Inventory Costs','Dollars USD $')
+    # Costs
+    barPlot(['Calibration costs','New site costs','CAC'],'Costs','Dollars USD $')
+    barPlot(['Number of Field Clinical Specialists', 'Number of Remote techs'],'Number of Staff','Count')
+
+
+#barPlot (yArray,                                  Title,                 Units,              maximize=False)
 
     
-    fig = px.bar(
-        data_frame = ydf,
-        x = "Year",
-        y = ['TOMAC_Inventory','CCG_Inventory','CDI_Inventory'],
-        opacity = 0.5,
-        color_discrete_sequence=['deepskyblue','MediumSlateBlue','DarkTurquoise'],
-        orientation = "v",
-        barmode = 'group',
-        title='Number of Inventory',
-        labels={'x': 'Year', 'value':'Number of Inventory'}
-    )    
-    
-    fig.update_layout(legend=dict(
-        yanchor="top",
-        y=0.99,
-        xanchor="left",
-        x=0.01
-    ))
-
-    fig.update_layout(hovermode='x unified')
-    
-    st.plotly_chart(fig, use_container_width=True)
-    
-
-    fig = px.bar(
-        data_frame = ydf,
-        x = "Year",
-        y = ['Calibration_costs','Patient_Setup_Costs','Follow_up_Costs'],
-        opacity = 0.5,
-        color_discrete_sequence=['deepskyblue','MediumSlateBlue','DarkTurquoise'],
-        orientation = "v",
-        barmode = 'group',
-        title='Costs',
-        labels={'x': 'Year', 'value':'Cost'}
-    )    
-    
-    fig.update_layout(legend=dict(
-        yanchor="top",
-        y=0.99,
-        xanchor="left",
-        x=0.01
-    ))
-
-    fig.update_layout(hovermode='x unified')
-    
-    st.plotly_chart(fig, use_container_width=True)
-    
-#%%
+#%%  Drop down calculation table/dataframes
 
 with st.expander("Calculations"):
     st.write('Monthly')
@@ -1198,9 +762,9 @@ with st.expander("Calculations"):
 with st.expander("Amortization Matrix"):
     One_patient_amortization
     
-
+# %% Save PDF
 with col3:
-     PDFgen = st.button(f"⚙️ Generate PDF")
+     PDFgen = st.button("⚙️ Generate PDF", disabled=True)
      if PDFgen:
         with st.spinner('Generating PDF...'):
             pdf = FPDF(orientation="P", unit="mm", format="Letter")
